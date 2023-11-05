@@ -7,6 +7,7 @@ final Widget? child;
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.black),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
