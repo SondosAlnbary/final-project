@@ -1,3 +1,4 @@
+import 'package:final_project/screens/signup_screen.dart';
 import 'package:final_project/widgets/custom_scaffold.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ Widget build(BuildContext context){
           Expanded(
             flex: 7,
             child: Container(
+              padding: const EdgeInsets.fromLTRB(25.0, 50.0, 25.0, 20.0),
             decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
@@ -144,7 +146,57 @@ Widget build(BuildContext context){
                 ),
                ),
               const SizedBox(height: 20,),
-              
+              SizedBox(
+                child: ElevatedButton(
+                  onPressed: (){
+                    if(_formSignInKey.currentState!.validate()&&
+                    rememberPassword){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content:Text('Processing Data'),
+                        ),
+                        );
+                    }
+                    else if(!rememberPassword){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please agree to the processing of personal data'),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text('Sign in'),
+                ),
+              ),
+              const SizedBox(height: 25,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Don\'t have an account?',
+                    style: TextStyle(
+                      color: Colors.black45,
+                    ),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (e)=> const SingnUpScreen(),
+                          ),
+                          );
+                      },
+                      child: Text(
+                        'Sign up',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: CupertinoColors.activeBlue,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
 
                 ],
               ),
