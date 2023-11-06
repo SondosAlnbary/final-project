@@ -183,7 +183,7 @@ Widget build(BuildContext context){
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (e)=> const SingnUpScreen(),
+                            builder: (e)=> const SignUpScreen(),
                           ),
                           );
                       },
