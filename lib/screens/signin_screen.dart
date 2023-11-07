@@ -134,6 +134,7 @@ Widget build(BuildContext context){
                          ),
                     ],
                   ),
+                  
                 ],
                ),
                GestureDetector(
@@ -166,9 +167,11 @@ Widget build(BuildContext context){
                     }
                   },
                   child: const Text('Sign in'),
+                  
                 ),
               ),
-              const SizedBox(height: 25,),
+              const SizedBox(height:30.0),
+              
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -178,6 +181,7 @@ Widget build(BuildContext context){
                       color: Colors.black45,
                     ),
                     ),
+                    
                     GestureDetector(
                       onTap: (){
                         Navigator.push(
@@ -195,9 +199,11 @@ Widget build(BuildContext context){
                         ),
                       ),
                     ),
+                    
                 ],
               ),
-
+              const SizedBox(
+                        height: 20.0,)
                 ],
               ),
             ),
