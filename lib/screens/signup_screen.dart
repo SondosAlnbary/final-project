@@ -12,6 +12,12 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formSignupKey = GlobalKey<FormState>();
   bool agreePersonalData = true;
+
+ //Add controllers for email, full name, and password
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _fullNameController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -274,3 +280,126 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 }
+
+
+
+///////////////////////////////////////////////////////////
+// import 'package:flutter/material.dart';
+// import 'package:final_project/screens/signin_screen.dart';
+// import 'package:final_project/widgets/custom_scaffold.dart';
+
+// class SignUpScreen extends StatefulWidget {
+//   const SignUpScreen({super.key});
+
+//   @override
+//   State<SignUpScreen> createState() => _SignUpScreenState();
+// }
+
+// class _SignUpScreenState extends State<SignUpScreen> {
+//   final _formSignupKey = GlobalKey<FormState>();
+//   bool agreePersonalData = true;
+
+//   // Add controllers for email, full name, and password
+//   TextEditingController _emailController = TextEditingController();
+//   TextEditingController _fullNameController = TextEditingController();
+//   TextEditingController _passwordController = TextEditingController();
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return CustomScaffold(
+//       child: Column(
+//         children: [
+//           // ... (existing code)
+
+//           // full name
+//           TextFormField(
+//             controller: _fullNameController, // Add controller
+//             validator: (value) {
+//               if (value == null || value.isEmpty) {
+//                 return 'Please enter Full name';
+//               }
+//               return null;
+//             },
+//             decoration: InputDecoration(
+//               label: const Text('Full Name'),
+//               hintText: 'Enter Full Name',
+//               // ... (existing code)
+//             ),
+//           ),
+//           const SizedBox(
+//             height: 25.0,
+//           ),
+//           // email
+//           TextFormField(
+//             controller: _emailController, // Add controller
+//             validator: (value) {
+//               if (value == null || value.isEmpty) {
+//                 return 'Please enter Email';
+//               }
+//               return null;
+//             },
+//             decoration: InputDecoration(
+//               label: const Text('Email'),
+//               hintText: 'Enter Email',
+//               // ... (existing code)
+//             ),
+//           ),
+//           const SizedBox(
+//             height: 25.0,
+//           ),
+//           // password
+//           TextFormField(
+//             controller: _passwordController, // Add controller
+//             obscureText: true,
+//             obscuringCharacter: '*',
+//             validator: (value) {
+//               if (value == null || value.isEmpty) {
+//                 return 'Please enter Password';
+//               }
+//               return null;
+//             },
+//             decoration: InputDecoration(
+//               label: const Text('Password'),
+//               hintText: 'Enter Password',
+//               // ... (existing code)
+//             ),
+//           ),
+//           // ... (existing code)
+
+//           // signup button
+//           SizedBox(
+//             width: double.infinity,
+//             child: ElevatedButton(
+//               onPressed: () {
+//                 if (_formSignupKey.currentState!.validate() &&
+//                     agreePersonalData) {
+//                   // Access the entered values using controllers
+//                   String fullName = _fullNameController.text;
+//                   String email = _emailController.text;
+//                   String password = _passwordController.text;
+
+//                   // Do something with the data
+//                   print('Full Name: $fullName, Email: $email, Password: $password');
+
+//                   ScaffoldMessenger.of(context).showSnackBar(
+//                     const SnackBar(
+//                       content: Text('Processing Data'),
+//                     ),
+//                   );
+//                 } else if (!agreePersonalData) {
+//                   ScaffoldMessenger.of(context).showSnackBar(
+//                     const SnackBar(
+//                         content: Text(
+//                             'Please agree to the processing of personal data')),
+//                   );
+//                 }
+//               },
+//               child: const Text('Sign up'),
+//             ),
+//           ),
+//           // ... (existing code)
+//         ],
+//       ),
+//     );
+//   }
+// }
