@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/screens/signin_screen.dart';
 import 'package:final_project/widgets/custom_scaffold.dart';
+
+final _firebase = FirebaseAuth.instance;
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -14,9 +18,48 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool agreePersonalData = true;
 
  //Add controllers for email, full name, and password
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _fullNameController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+   TextEditingController _emailController = TextEditingController();
+   TextEditingController _fullNameController = TextEditingController();
+   TextEditingController _passwordController = TextEditingController();
+
+var _enteredFullName='';
+var _enteredEmail='';
+var _enteredPassword='';
+
+
+
+void _submit() async{
+  final isValid= _formSignupKey.currentState!.validate();
+
+if(!isValid){
+  return;
+  }
+  _formSignupKey.currentState!.save();
+
+  if(agreePersonalData){
+//log users in 
+}
+else{
+  try{
+    final userCredentials =await _firebase.createUserWithEmailAndPassword(
+  email: _enteredEmail, password: _enteredPassword);
+ print(userCredentials);
+
+  }on FirebaseAuthException catch (error){
+    if(error.code == 'email-already-in-use'){//..
+    }
+  ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(error.message??'Authentication failed!'),
+      ),
+    );
+  }
+}
+}
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -60,11 +103,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       // full name
                       TextFormField(
+                        controller: _fullNameController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Full name';
                           }
                           return null;
+                        },
+                        onSaved: (value){
+                          _enteredFullName=value!;
                         },
                         decoration: InputDecoration(
                           label: const Text('Full Name'),
@@ -85,24 +132,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
+                        keyboardType:TextInputType.emailAddress,
+                        autocorrect: false,
+                        textCapitalization: TextCapitalization.none,
+                        
                       ),
                       const SizedBox(
                         height: 25.0,
                       ),
                       // email
                       TextFormField(
+                        controller: _emailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Email';
                           }
                           return null;
                         },
+                        onSaved: (value){
+                          _enteredEmail=value!;
+                        },
                         decoration: InputDecoration(
                           label: const Text('Email'),
                           hintText: 'Enter Email',
+
                           hintStyle: const TextStyle(
                             color: Colors.black26,
                           ),
+                          
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
                               color: Colors.black12, // Default border color
@@ -116,12 +173,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
+                        
+                        
+
                       ),
                       const SizedBox(
                         height: 25.0,
                       ),
                       // password
+ /////////////////////////////////////////////////////////////////////////////////                     
                       TextFormField(
+                        controller: _passwordController,
                         obscureText: true,
                         obscuringCharacter: '*',
                         validator: (value) {
@@ -129,6 +191,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             return 'Please enter Password';
                           }
                           return null;
+                        },
+                        onSaved: (value){
+                          _enteredPassword=value!;
                         },
                         decoration: InputDecoration(
                           label: const Text('Password'),
@@ -149,6 +214,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
+                        
                       ),
                       const SizedBox(
                         height: 25.0,
@@ -187,9 +253,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formSignupKey.currentState!.validate() &&
                                 agreePersonalData) {
+                                String fullName = _fullNameController.text;
+                                String email = _emailController.text;
+                                 String password = _passwordController.text;
+                                await registerUser(fullName,email,password);
+                                  
+                                // print('Full Name: $fullName, Email: $email, Password: $password');
+
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Processing Data'),
@@ -206,6 +279,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           child: const Text('Sign up'),
                         ),
                       ),
+                     
+
                       const SizedBox(
                         height: 30.0,
                       ),
@@ -269,6 +344,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 20.0,
                       ),
+                    
+                    
+
                     ],
                   ),
                 ),
@@ -279,127 +357,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+  
+  Future<void> registerUser(String fullName, String email, String password) async {
+  try {
+    // Create user in Firebase Authentication
+    UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    // Save user data to Firestore
+    await FirebaseFirestore.instance.collection('user').doc(userCredential.user!.uid).set({
+      'name': fullName,
+      'email': email,
+      // Add other user-related data as needed
+    });
+
+    print('User registered successfully!');
+  } catch (e) {
+    print('Error registering user: $e');
+  }
 }
-
-
-
-///////////////////////////////////////////////////////////
-// import 'package:flutter/material.dart';
-// import 'package:final_project/screens/signin_screen.dart';
-// import 'package:final_project/widgets/custom_scaffold.dart';
-
-// class SignUpScreen extends StatefulWidget {
-//   const SignUpScreen({super.key});
-
-//   @override
-//   State<SignUpScreen> createState() => _SignUpScreenState();
-// }
-
-// class _SignUpScreenState extends State<SignUpScreen> {
-//   final _formSignupKey = GlobalKey<FormState>();
-//   bool agreePersonalData = true;
-
-//   // Add controllers for email, full name, and password
-//   TextEditingController _emailController = TextEditingController();
-//   TextEditingController _fullNameController = TextEditingController();
-//   TextEditingController _passwordController = TextEditingController();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return CustomScaffold(
-//       child: Column(
-//         children: [
-//           // ... (existing code)
-
-//           // full name
-//           TextFormField(
-//             controller: _fullNameController, // Add controller
-//             validator: (value) {
-//               if (value == null || value.isEmpty) {
-//                 return 'Please enter Full name';
-//               }
-//               return null;
-//             },
-//             decoration: InputDecoration(
-//               label: const Text('Full Name'),
-//               hintText: 'Enter Full Name',
-//               // ... (existing code)
-//             ),
-//           ),
-//           const SizedBox(
-//             height: 25.0,
-//           ),
-//           // email
-//           TextFormField(
-//             controller: _emailController, // Add controller
-//             validator: (value) {
-//               if (value == null || value.isEmpty) {
-//                 return 'Please enter Email';
-//               }
-//               return null;
-//             },
-//             decoration: InputDecoration(
-//               label: const Text('Email'),
-//               hintText: 'Enter Email',
-//               // ... (existing code)
-//             ),
-//           ),
-//           const SizedBox(
-//             height: 25.0,
-//           ),
-//           // password
-//           TextFormField(
-//             controller: _passwordController, // Add controller
-//             obscureText: true,
-//             obscuringCharacter: '*',
-//             validator: (value) {
-//               if (value == null || value.isEmpty) {
-//                 return 'Please enter Password';
-//               }
-//               return null;
-//             },
-//             decoration: InputDecoration(
-//               label: const Text('Password'),
-//               hintText: 'Enter Password',
-//               // ... (existing code)
-//             ),
-//           ),
-//           // ... (existing code)
-
-//           // signup button
-//           SizedBox(
-//             width: double.infinity,
-//             child: ElevatedButton(
-//               onPressed: () {
-//                 if (_formSignupKey.currentState!.validate() &&
-//                     agreePersonalData) {
-//                   // Access the entered values using controllers
-//                   String fullName = _fullNameController.text;
-//                   String email = _emailController.text;
-//                   String password = _passwordController.text;
-
-//                   // Do something with the data
-//                   print('Full Name: $fullName, Email: $email, Password: $password');
-
-//                   ScaffoldMessenger.of(context).showSnackBar(
-//                     const SnackBar(
-//                       content: Text('Processing Data'),
-//                     ),
-//                   );
-//                 } else if (!agreePersonalData) {
-//                   ScaffoldMessenger.of(context).showSnackBar(
-//                     const SnackBar(
-//                         content: Text(
-//                             'Please agree to the processing of personal data')),
-//                   );
-//                 }
-//               },
-//               child: const Text('Sign up'),
-//             ),
-//           ),
-//           // ... (existing code)
-//         ],
-//       ),
-//     );
-//   }
-// }
+}
