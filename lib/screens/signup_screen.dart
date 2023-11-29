@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/screens/signin_screen.dart';
 import 'package:final_project/widgets/custom_scaffold.dart';
+import 'package:final_project/screens/Verifying.dart';
 
 final _firebase = FirebaseAuth.instance;
 
@@ -149,6 +150,7 @@ else{
                           }
                           return null;
                         },
+                        
                         onSaved: (value){
                           _enteredEmail=value!;
                         },
@@ -180,6 +182,7 @@ else{
                       const SizedBox(
                         height: 25.0,
                       ),
+                      
                       // password
  /////////////////////////////////////////////////////////////////////////////////                     
                       TextFormField(
@@ -254,15 +257,27 @@ else{
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () async {
+                           
                             if (_formSignupKey.currentState!.validate() &&
                                 agreePersonalData) {
                                 String fullName = _fullNameController.text;
                                 String email = _emailController.text;
                                  String password = _passwordController.text;
                                 await registerUser(fullName,email,password);
-                                  
-                                // print('Full Name: $fullName, Email: $email, Password: $password');
+                                Future<bool> isEmailTaken(String email) async {
+          // Create a reference to the 'user' collection
+          final usersCollection = FirebaseFirestore.instance.collection('user');
 
+          QuerySnapshot querySnapshot = await usersCollection.where('email', isEqualTo: email).get();
+
+          if (querySnapshot.docs.isNotEmpty) {
+              return true;
+          }
+          return false;
+          }
+  
+                               
+                       
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Processing Data'),
@@ -274,8 +289,17 @@ else{
                                     content: Text(
                                         'Please agree to the processing of personal data')),
                               );
-                            }
+                          //     if (await isEmailTaken(_emailController.text)) {
+                          // print(
+                          //   'The email address is already in use by another account.');
+                          //   } else {
+                          //     // Continue with the account creation process
+                          //     }
+                            } 
+                           
+ 
                           },
+                          
                           child: const Text('Sign up'),
                         ),
                       ),
@@ -331,6 +355,7 @@ else{
                                 ),
                               );
                             },
+                            
                             child: Text(
                               'Sign in',
                               style: TextStyle(
@@ -357,7 +382,10 @@ else{
       ),
     );
   }
-  
+
+
+
+
   Future<void> registerUser(String fullName, String email, String password) async {
   try {
     // Create user in Firebase Authentication
@@ -370,6 +398,8 @@ else{
     await FirebaseFirestore.instance.collection('user').doc(userCredential.user!.uid).set({
       'name': fullName,
       'email': email,
+      'password':password,
+
       // Add other user-related data as needed
     });
 
