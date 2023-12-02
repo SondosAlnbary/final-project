@@ -6,14 +6,14 @@ import 'package:final_project/widgets/custom_scaffold.dart';
 
 final _firebase = FirebaseAuth.instance;
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class AdminSignUp extends StatefulWidget {
+  const AdminSignUp({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<AdminSignUp> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpScreenState extends State<AdminSignUp> {
   final _formSignupKey = GlobalKey<FormState>();
   bool agreePersonalData = true;
 
@@ -390,7 +390,7 @@ if(!isValid){
 
 // Function to check if the email is already taken
   Future<bool> isEmailTaken(String email) async {
-    final usersCollection = FirebaseFirestore.instance.collection('user');
+    final usersCollection = FirebaseFirestore.instance.collection('Adminuser');
     QuerySnapshot querySnapshot = await usersCollection.where('email', isEqualTo: email).get();
 
     return querySnapshot.docs.isNotEmpty;
@@ -406,7 +406,7 @@ if(!isValid){
     );
 
     // Save user data to Firestore
-    await FirebaseFirestore.instance.collection('user').doc(userCredential.user!.uid).set({
+    await FirebaseFirestore.instance.collection('Adminuser').doc(userCredential.user!.uid).set({
       'name': fullName,
       'email': email,
       'password':password,

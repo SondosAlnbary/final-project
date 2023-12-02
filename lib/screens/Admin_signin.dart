@@ -1,4 +1,4 @@
- import 'package:final_project/widgets/welcome_button.dart';
+  import 'package:final_project/widgets/welcome_button.dart';
  import 'package:firebase_auth/firebase_auth.dart';
  import 'package:flutter/cupertino.dart';
  import 'package:flutter/material.dart';
@@ -7,14 +7,14 @@
  import 'package:final_project/screens/category_screen.dart';
 import 'package:final_project/screens/second_screen.dart'; 
 
-class SingnInScreen extends StatefulWidget {
-  const SingnInScreen({Key? key}) : super(key: key);
+class BossSignIn extends StatefulWidget {
+  const BossSignIn({Key? key}) : super(key: key);
 
   @override
-  State<SingnInScreen> createState() => _SignInScreenState();
+  State<BossSignIn> createState() => _SignInScreenState();
 }
 
-class _SignInScreenState extends State<SingnInScreen> {
+class _SignInScreenState extends State<BossSignIn> {
   final _formSignInKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -49,7 +49,7 @@ class _SignInScreenState extends State<SingnInScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        'Welcome back',
+                        'Welcome back Admin',
                         style: TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.w900,

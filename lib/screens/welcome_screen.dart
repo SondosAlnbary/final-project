@@ -1,8 +1,10 @@
 import 'package:final_project/screens/signin_screen.dart';
+import 'package:final_project/screens/third_screen.dart';
 import 'package:final_project/widgets/custom_scaffold.dart';
 import 'package:final_project/widgets/welcome_button.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/screens/signup_screen.dart';
+import 'package:final_project/screens/second_screen.dart';
 
 
 class WelcomeScreen extends StatelessWidget{
@@ -24,21 +26,7 @@ class WelcomeScreen extends StatelessWidget{
               child:RichText(
                 textAlign: TextAlign.center,
                 text:const TextSpan(
-                  children: [
-                    // TextSpan(
-                    //   text: 'Welcome\n',
-                    //   style: TextStyle(
-                    //     fontSize: 45.0,
-                    //     fontWeight: FontWeight.w600,
-                    //   )),
-                    // TextSpan(
-                    //   text: 
-                    //   '\nEnter personal details',
-                    //   style: TextStyle(
-                    //     fontSize: 20,
-                    //   ))
-                      
-                  ],
+                  
                 ),
                 ),
             ),
@@ -54,7 +42,7 @@ class WelcomeScreen extends StatelessWidget{
                 Expanded(
                   child: WelcomeButton(
                     buttonText: 'Sign in',
-                    onTap: SingnInScreen(),
+                    onTap: SecondScreen(),
                     color: Colors.transparent,
                     textColor: Colors.black,
                   ),
@@ -62,7 +50,7 @@ class WelcomeScreen extends StatelessWidget{
                 Expanded(
                   child: WelcomeButton(
                     buttonText: 'Sign up',
-                    onTap: SignUpScreen(),
+                    onTap: ThirdScreen(),
                     color: Colors.white,
                     textColor:  Colors.red,
                   ),
