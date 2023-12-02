@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/screens/signin_screen.dart';
 import 'package:final_project/widgets/custom_scaffold.dart';
+import 'package:final_project/screens/Admin_signin.dart';
 
 final _firebase = FirebaseAuth.instance;
 
@@ -356,7 +357,7 @@ if(!isValid){
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (e) => const SingnInScreen(),
+                                  builder: (e) => const BossSignIn(),
                                 ),
                               );
                             },

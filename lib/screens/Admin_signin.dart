@@ -6,6 +6,7 @@
  import 'package:final_project/widgets/custom_scaffold.dart';
  import 'package:final_project/screens/category_screen.dart';
 import 'package:final_project/screens/second_screen.dart'; 
+import 'package:final_project/screens/Admin_signup.dart';
 
 class BossSignIn extends StatefulWidget {
   const BossSignIn({Key? key}) : super(key: key);
@@ -251,7 +252,7 @@ class _SignInScreenState extends State<BossSignIn> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (e) => const SignUpScreen(),
+                                  builder: (e) => const AdminSignUp(),
                                 ),
                               );
                             },
