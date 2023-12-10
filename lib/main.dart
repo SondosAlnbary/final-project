@@ -2,7 +2,8 @@ import 'package:final_project/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
-//import 'package:final_project/screens/auth.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
