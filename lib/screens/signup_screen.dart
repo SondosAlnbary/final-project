@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:final_project/screens/signin_screen.dart';
 import 'package:final_project/widgets/custom_scaffold.dart';
 
+
 final _firebase = FirebaseAuth.instance;
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
-
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
@@ -27,6 +27,9 @@ var _enteredEmail='';
 var _enteredPassword='';
 var _isEmailTaken = false; // Variable to track if the email is already taken
 
+    RegExp regex =
+        RegExp('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~])');
+      
 Future<void> _submit() async{
   final isValid= _formSignupKey.currentState!.validate();
 
@@ -126,7 +129,14 @@ if(!isValid){
                           if (value == null || value.isEmpty) {
                             return 'Please enter Full name';
                           }
+                          if(value.length < 2)
+                          {return "Username is too short.";}
+                          else if (value.length > 16) {
+                          return "Username is too long.";
+                         } else {
+        
                           return null;
+                        }
                         },
                         onSaved: (value){
                           _enteredFullName=value!;
@@ -165,8 +175,14 @@ if(!isValid){
                           if (value == null || value.isEmpty) {
                             return 'Please enter Email';
                           }
-                    
+                          if(value.length < 2)
+                          {return "Username is too short.";}
+                          else if (value.length > 60) {
+                          return "Username is too long.";
+                         } else {
+        
                           return null;
+                        }
                         },
                         
                         onSaved: (value){
@@ -219,7 +235,18 @@ if(!isValid){
                           if (value == null || value.isEmpty) {
                             return 'Please enter Password';
                           }
+                          if (!regex.hasMatch(value)) {
+                          return 'Enter a valid password include sympols letters';
+                         }
+                          if(value.length < 2)
+                          {return "Username is too short.";}
+                          else if (value.length > 12) {
+                          return "Username is too long.";
+                          
+                         } else {
+        
                           return null;
+                        }
                         },
                         onSaved: (value){
                           _enteredPassword=value!;
@@ -290,6 +317,8 @@ if(!isValid){
                                 String email = _emailController.text;
                                  String password = _passwordController.text;
                                 await registerUser(fullName,email,password);
+
+                                
                        
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -404,6 +433,8 @@ if(!isValid){
       email: email,
       password: password,
     );
+
+    
 
     // Save user data to Firestore
     await FirebaseFirestore.instance.collection('user').doc(userCredential.user!.uid).set({

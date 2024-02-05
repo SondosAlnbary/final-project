@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:final_project/screens/signin_screen.dart';
+//import 'package:final_project/screens/signin_screen.dart';
 import 'package:final_project/widgets/custom_scaffold.dart';
 import 'package:final_project/screens/Admin_signin.dart';
 
@@ -13,7 +13,6 @@ class AdminSignUp extends StatefulWidget {
   @override
   State<AdminSignUp> createState() => _SignUpScreenState();
 }
-
 class _SignUpScreenState extends State<AdminSignUp> {
   final _formSignupKey = GlobalKey<FormState>();
   bool agreePersonalData = true;
@@ -27,6 +26,9 @@ var _enteredFullName='';
 var _enteredEmail='';
 var _enteredPassword='';
 var _isEmailTaken = false; // Variable to track if the email is already taken
+
+    RegExp regex =
+        RegExp('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~])');
 
 Future<void> _submit() async{
   final isValid= _formSignupKey.currentState!.validate();
@@ -127,7 +129,14 @@ if(!isValid){
                           if (value == null || value.isEmpty) {
                             return 'Please enter Full name';
                           }
+                          if(value.length < 2)
+                          {return "Username is too short.";}
+                          else if (value.length > 16) {
+                          return "Username is too long.";
+                         } else {
+        
                           return null;
+                        }
                         },
                         onSaved: (value){
                           _enteredFullName=value!;
@@ -166,8 +175,14 @@ if(!isValid){
                           if (value == null || value.isEmpty) {
                             return 'Please enter Email';
                           }
-                    
+                          if(value.length < 2)
+                          {return "Username is too short.";}
+                          else if (value.length > 60) {
+                          return "Username is too long.";
+                         } else {
+        
                           return null;
+                        }
                         },
                         
                         onSaved: (value){
@@ -220,7 +235,18 @@ if(!isValid){
                           if (value == null || value.isEmpty) {
                             return 'Please enter Password';
                           }
+                         if (!regex.hasMatch(value)) {
+                          return 'Enter a valid password include sympols letters';
+                         }
+                          if(value.length < 2)
+                          {return "Username is too short.";}
+                          else if (value.length > 12) {
+                          return "Username is too long.";
+                          
+                         } else {
+        
                           return null;
+                        }
                         },
                         onSaved: (value){
                           _enteredPassword=value!;
