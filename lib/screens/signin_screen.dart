@@ -1,10 +1,10 @@
- import 'package:final_project/widgets/welcome_button.dart';
- import 'package:firebase_auth/firebase_auth.dart';
- import 'package:flutter/cupertino.dart';
- import 'package:flutter/material.dart';
- import 'package:final_project/screens/signup_screen.dart';
- import 'package:final_project/widgets/custom_scaffold.dart';
- import 'package:final_project/screens/category_screen.dart';
+import 'package:final_project/widgets/welcome_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:final_project/screens/signup_screen.dart';
+import 'package:final_project/widgets/custom_scaffold.dart';
+import 'package:final_project/screens/category_screen.dart';
 import 'package:final_project/screens/second_screen.dart'; 
 
 class SingnInScreen extends StatefulWidget {
@@ -46,8 +46,12 @@ class _SignInScreenState extends State<SingnInScreen> {
                 child: Form(
                   key: _formSignInKey,
                   child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      AppBar(
+                        backgroundColor: Colors.transparent,
+                        automaticallyImplyLeading: false, // Set this property to false to remove the back arrow
+                      ),
                       Text(
                         'Welcome back',
                         style: TextStyle(
@@ -163,7 +167,7 @@ class _SignInScreenState extends State<SingnInScreen> {
                         height: 25.0,
                       ),
                       SizedBox(
-                      width: double.infinity,
+                        width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () async { 
                             if (_formSignInKey.currentState!.validate() &&
@@ -179,7 +183,8 @@ class _SignInScreenState extends State<SingnInScreen> {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => CategoryScreen()),
+                                    builder: (context) => CategoryScreen(),
+                                  ),
                                 );
               
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -201,7 +206,8 @@ class _SignInScreenState extends State<SingnInScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text(
-                                      'Please agree to the processing of personal data'),
+                                    'Please agree to the processing of personal data',
+                                  ),
                                 ),
                               );
                             }
@@ -211,32 +217,31 @@ class _SignInScreenState extends State<SingnInScreen> {
                       ),
                       const SizedBox(height: 25.0),
                       Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Divider(
-                                thickness: 0.7,
-                                color: Colors.grey.withOpacity(0.5),
-                              ),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              thickness: 0.7,
+                              color: Colors.grey.withOpacity(0.5),
                             ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 0,
-                                horizontal: 0,
-                              ),
-                              
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 0,
+                              horizontal: 0,
                             ),
-                            Expanded(
-                              child: Divider(
-                                thickness: 0.7,
-                                color: Colors.grey.withOpacity(0.5),
-                              ),
+                          ),
+                          Expanded(
+                            child: Divider(
+                              thickness: 0.7,
+                              color: Colors.grey.withOpacity(0.5),
                             ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 25.0,
-                        ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -267,7 +272,7 @@ class _SignInScreenState extends State<SingnInScreen> {
                       ),
                       const SizedBox(
                         height: 20.0,
-                      )
+                      ),
                     ],
                   ),
                 ),

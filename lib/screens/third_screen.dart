@@ -16,6 +16,7 @@ class ThirdScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false, // Set this property to false to remove the back arrow
       ),
       extendBodyBehindAppBar: true,
       body: Stack(
