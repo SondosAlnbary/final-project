@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/screens/signin_screen.dart';
 import 'package:final_project/widgets/custom_scaffold.dart';
+ import 'package:final_project/screens/category_screen.dart';
+
 
 
 final _firebase = FirebaseAuth.instance;
@@ -54,6 +56,11 @@ if(!isValid){
     email: _enteredEmail,
      password: _enteredPassword
      );
+    //  Navigator.pushReplacement(
+    //         context,
+    //        MaterialPageRoute(
+    //       builder: (context) => CategoryScreen()),
+    //                             );
     print(userCredentials);
         }
   }on FirebaseAuthException catch (error){
@@ -168,12 +175,17 @@ if(!isValid){
                       const SizedBox(
                         height: 25.0,
                       ),
+
+                      
                       // email
                       TextFormField(
                         controller: _emailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Email';
+                          }
+                          if( _isEmailTaken){
+                            return  "This email is already in use";
                           }
                           if(value.length < 2)
                           {return "Username is too short.";}
@@ -208,6 +220,7 @@ if(!isValid){
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
+                          
                         ),
                       ),
                       const SizedBox(
@@ -316,8 +329,15 @@ if(!isValid){
                                 String fullName = _fullNameController.text;
                                 String email = _emailController.text;
                                  String password = _passwordController.text;
-                                await registerUser(fullName,email,password);
 
+                          //       if (await isEmailTaken(email)) {
+                          //         setState(() {
+                          //         _isEmailTaken = true;
+                          //                           });
+                          // showSnackBar('This email is already in use. Please use another email.');}
+
+                                await registerUser(fullName,email,password);
+                                 
                                 
                        
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -337,7 +357,7 @@ if(!isValid){
                           child: const Text('Sign up'),
                         ),
                       ),
-                     
+                      
 
                       const SizedBox(
                         height: 30.0,
