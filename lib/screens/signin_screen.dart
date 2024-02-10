@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:final_project/screens/signup_screen.dart';
 import 'package:final_project/widgets/custom_scaffold.dart';
 import 'package:final_project/screens/category_screen.dart';
-import 'package:final_project/screens/second_screen.dart'; 
+import 'package:final_project/screens/second_screen.dart';
+// import 'package:email_validator/email_validator.dart'; 
 
 class SingnInScreen extends StatefulWidget {
   const SingnInScreen({Key? key}) : super(key: key);
@@ -69,6 +70,9 @@ class _SignInScreenState extends State<SingnInScreen> {
                           if (value == null || value.isEmpty) {
                             return 'Please Enter Email ';
                           }
+                  //          else if (!EmailValidator.validate(value)) {
+                  //          return 'Invalid Email Address';
+                  // }
                           return null;
                         },
                         decoration: InputDecoration(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'welcome_screen.dart'; // Import your welcome screen file
-
+import 'welcome_screen.dart';
+import 'ContactUs.dart';
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({Key? key});
 
@@ -19,7 +19,7 @@ class CategoryScreen extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('Categories'),
+        title: Text('Reports'),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -40,6 +40,17 @@ class CategoryScreen extends StatelessWidget {
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
+          ),
+          Positioned(
+            left: 16.0,
+            bottom: 16.0,
+            child: FloatingActionButton(
+              onPressed: () {
+                // Handle the '+' button click
+              },
+              backgroundColor: Colors.grey,
+              child: Icon(Icons.add, color: Colors.white),
+            ),
           ),
           Column(
             children: [
@@ -78,10 +89,6 @@ class CategoryScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.assignment),
             label: 'Reports',
           ),
@@ -97,8 +104,21 @@ class CategoryScreen extends StatelessWidget {
         selectedItemColor: Colors.blue, // Customize the selected item color
         unselectedItemColor: Colors.grey, // Customize the unselected item color
         onTap: (index) {
-          // Handle navigation based on the selected item index
-          // You can implement your navigation logic here
+            switch (index) {
+            case 0:
+              // Handle 'Reports' tab
+              break;
+            case 1:
+              // Navigate to the 'Contact Us' screen when 'Contact Us' tab is tapped
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ContactUsScreen()),
+              );
+              break;
+            case 2:
+              // Handle 'Account' tab
+              break;
+          }
         },
       ),
     );
@@ -108,7 +128,18 @@ class CategoryScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         final snackBar = SnackBar(
-          content: Text('Selected category: ${category.name}'),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Selected category: ${category.name}'),
+              ElevatedButton(
+                onPressed: () {
+                  // Handle the '+' button click
+                },
+                child: Text('+'),
+              ),
+            ],
+          ),
           backgroundColor: Color.fromRGBO(255, 69, 108, 140),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
