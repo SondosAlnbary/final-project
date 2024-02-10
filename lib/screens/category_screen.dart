@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'welcome_screen.dart'; // Import your welcome screen file
@@ -20,13 +19,12 @@ class CategoryScreen extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('Pick a category'),
-        automaticallyImplyLeading: false, // Remove the back arrow
+        title: Text('Categories'),
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
-              // Navigate to the welcome screen
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => WelcomeScreen()),
@@ -69,7 +67,7 @@ class CategoryScreen extends StatelessWidget {
                   padding: EdgeInsets.all(8.0),
                   itemCount: categories.length,
                   itemBuilder: (context, index) {
-                    return buildCategoryItem(categories[index]);
+                    return buildCategoryItem(context, categories[index]);
                   },
                 ),
               ),
@@ -77,35 +75,70 @@ class CategoryScreen extends StatelessWidget {
           ),
         ],
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.assignment),
+            label: 'Reports',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.mail),
+            label: 'Contact Us',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle),
+            label: 'Account',
+          ),
+        ],
+        selectedItemColor: Colors.blue, // Customize the selected item color
+        unselectedItemColor: Colors.grey, // Customize the unselected item color
+        onTap: (index) {
+          // Handle navigation based on the selected item index
+          // You can implement your navigation logic here
+        },
+      ),
     );
   }
 
-  Widget buildCategoryItem(CategoryInfo category) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          category.icon is IconData
-              ? Icon(
-                  category.icon as IconData,
-                  size: 48.0,
-                  color: Color.fromARGB(255, 174, 112, 64), // Customize the color of the icon
-                )
-              : FaIcon(
-                  category.icon as IconData,
-                  size: 48.0,
-                  color: Color.fromARGB(255, 193, 125, 73), // Customize the color of the icon
-                ),
-          SizedBox(height: 8.0),
-          Text(
-            category.name,
-            style: TextStyle(fontSize: 18.0),
-          ),
-        ],
+  Widget buildCategoryItem(BuildContext context, CategoryInfo category) {
+    return GestureDetector(
+      onTap: () {
+        final snackBar = SnackBar(
+          content: Text('Selected category: ${category.name}'),
+          backgroundColor: Color.fromRGBO(255, 69, 108, 140),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            category.icon is IconData
+                ? Icon(
+                    category.icon as IconData,
+                    size: 48.0,
+                    color: Color.fromARGB(255, 69, 108, 140),
+                  )
+                : FaIcon(
+                    category.icon as IconData,
+                    size: 48.0,
+                    color: Color.fromARGB(255, 193, 125, 73),
+                  ),
+            SizedBox(height: 8.0),
+            Text(
+              category.name,
+              style: TextStyle(fontSize: 18.0),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -117,4 +150,3 @@ class CategoryInfo {
 
   CategoryInfo({required this.name, required this.icon});
 }
-
