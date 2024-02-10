@@ -11,7 +11,7 @@ class ContactUsScreen extends StatelessWidget {
        body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/gray.png'), // Replace with your image path
+            image: AssetImage('assets/images/noeye.png'), // Replace with your image path
             fit: BoxFit.cover,
           ),
         ),

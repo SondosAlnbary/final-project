@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'welcome_screen.dart';
 import 'ContactUs.dart';
+import 'Account.dart';
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({Key? key});
 
@@ -116,7 +117,10 @@ class CategoryScreen extends StatelessWidget {
               );
               break;
             case 2:
-              // Handle 'Account' tab
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AccountScreen()),
+              );
               break;
           }
         },
