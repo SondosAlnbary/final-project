@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'welcome_screen.dart';
 import 'ContactUs.dart';
 import 'Account.dart';
+import 'Sanitation.dart';
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({Key? key});
 
@@ -15,6 +16,11 @@ class CategoryScreen extends StatelessWidget {
       CategoryInfo(name: 'Road Maintenance', icon: Icons.settings),
       CategoryInfo(name: 'Environmental Sanitation', icon: Icons.eco),
       CategoryInfo(name: 'Safety and Security', icon: Icons.safety_check),
+      CategoryInfo(name: 'Utilities', icon: Icons.electric_bolt),
+      CategoryInfo(name: 'Transportation', icon: Icons.emoji_transportation_sharp),
+
+      
+
     ];
 
     return Scaffold(
@@ -42,17 +48,17 @@ class CategoryScreen extends StatelessWidget {
             width: double.infinity,
             height: double.infinity,
           ),
-          Positioned(
-            left: 16.0,
-            bottom: 16.0,
-            child: FloatingActionButton(
-              onPressed: () {
-                // Handle the '+' button click
-              },
-              backgroundColor: Colors.grey,
-              child: Icon(Icons.add, color: Colors.white),
-            ),
-          ),
+          // Positioned(
+          //   left: 16.0,
+          //   bottom: 16.0,
+          //   child: FloatingActionButton(
+          //     onPressed: () {
+          //       // Handle the '+' button click
+          //     },
+          //     backgroundColor: Colors.grey,
+          //     child: Icon(Icons.add, color: Colors.white),
+          //   ),
+          // ),
           Column(
             children: [
               Padding(
@@ -159,12 +165,12 @@ class CategoryScreen extends StatelessWidget {
             category.icon is IconData
                 ? Icon(
                     category.icon as IconData,
-                    size: 48.0,
+                    size: 30.0,
                     color: Color.fromARGB(255, 69, 108, 140),
                   )
                 : FaIcon(
                     category.icon as IconData,
-                    size: 48.0,
+                    size: 30.0,
                     color: Color.fromARGB(255, 193, 125, 73),
                   ),
             SizedBox(height: 8.0),

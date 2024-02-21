@@ -32,51 +32,51 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
     RegExp regex =
         RegExp('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~])');
       
-Future<void> _submit() async{
-  final isValid= _formSignupKey.currentState!.validate();
+// Future<void> _submit() async{
+//   final isValid= _formSignupKey.currentState!.validate();
 
-if(!isValid){
-  return;
-  }
-  _formSignupKey.currentState!.save();
+// if(!isValid){
+//   return;
+//   }
+//   _formSignupKey.currentState!.save();
 
-  if(agreePersonalData){
-//log users in 
-}else{
-  try{
-     // Check if the email already exists
-        if (await isEmailTaken(_enteredEmail)) {
-           setState(() {
-            _isEmailTaken = true;
-          });
-          showSnackBar('This email is already in use. Please use another email.');
+//   if(agreePersonalData){
+// //log users in 
+// }else{
+//   try{
+//      // Check if the email already exists
+//         if (await isEmailTaken(_enteredEmail)) {
+//            setState(() {
+//             _isEmailTaken = true;
+//           });
+//           showSnackBar('This email is already in use. Please use another email.');
           
-        } else {
-    final userCredentials =await _firebase.createUserWithEmailAndPassword(
-    email: _enteredEmail,
-     password: _enteredPassword
-     );
-    //  Navigator.pushReplacement(
-    //         context,
-    //        MaterialPageRoute(
-    //       builder: (context) => CategoryScreen()),
-    //                             );
-    print(userCredentials);
-        }
-  }on FirebaseAuthException catch (error){
-    if(error.code == 'email-already-in-use'){
-      setState(() {
-            _isEmailTaken = true;
-          });
-    // Handle email already in use error
-        showSnackBar('This email is already in use. Please use another email.');
-        } else {
-          // Handle other authentication errors
-          showSnackBar(error.message ?? 'Authentication failed!');
-    }
-  }
-}
-}
+//         } else {
+//     final userCredentials =await _firebase.createUserWithEmailAndPassword(
+//     email: _enteredEmail,
+//      password: _enteredPassword
+//      );
+//     //  Navigator.pushReplacement(
+//     //         context,
+//     //        MaterialPageRoute(
+//     //       builder: (context) => CategoryScreen()),
+//     //                             );
+//     print(userCredentials);
+//         }
+//   }on FirebaseAuthException catch (error){
+//     if(error.code == 'email-already-in-use'){
+//       setState(() {
+//             _isEmailTaken = true;
+//           });
+//     // Handle email already in use error
+//         showSnackBar('This email is already in use. Please use another email.');
+//         } else {
+//           // Handle other authentication errors
+//           showSnackBar(error.message ?? 'Authentication failed!');
+//     }
+//   }
+// }
+// }
     // Function to show a SnackBar with a given message
   void showSnackBar(String message) {
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -443,8 +443,8 @@ if(!isValid){
   Future<bool> isEmailTaken(String email) async {
     final usersCollection = FirebaseFirestore.instance.collection('user');
     QuerySnapshot querySnapshot = await usersCollection.where('email', isEqualTo: email).get();
-
-    return querySnapshot.docs.isNotEmpty;
+  print(querySnapshot);
+    return true;
   }
 
 
