@@ -6,26 +6,15 @@ class Sanitation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contact Us'),
+        title: Text('Sanitation'),
       ),
-       body: Container(
+      body: Container(
         decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/noeye.png'), // Replace with your image path
-            fit: BoxFit.cover,
-          ),
+          color: Color.fromARGB(255, 183, 211, 225), // Set the background color to light blue
+          
         ),
-      child: Padding(
-        
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-   
-        ),
+       
       ),
-       ),
     );
   }
 }
-
-

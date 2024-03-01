@@ -1,9 +1,17 @@
+import 'package:final_project/screens/enviroment.dart';
+import 'package:final_project/screens/garden.dart';
+import 'package:final_project/screens/lighting.dart';
+import 'package:final_project/screens/road.dart';
+import 'package:final_project/screens/safety.dart';
+import 'package:final_project/screens/transportation.dart';
+import 'package:final_project/screens/utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'welcome_screen.dart';
 import 'ContactUs.dart';
 import 'Account.dart';
 import 'Sanitation.dart';
+
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({Key? key});
 
@@ -18,9 +26,6 @@ class CategoryScreen extends StatelessWidget {
       CategoryInfo(name: 'Safety and Security', icon: Icons.safety_check),
       CategoryInfo(name: 'Utilities', icon: Icons.electric_bolt),
       CategoryInfo(name: 'Transportation', icon: Icons.emoji_transportation_sharp),
-
-      
-
     ];
 
     return Scaffold(
@@ -48,17 +53,6 @@ class CategoryScreen extends StatelessWidget {
             width: double.infinity,
             height: double.infinity,
           ),
-          // Positioned(
-          //   left: 16.0,
-          //   bottom: 16.0,
-          //   child: FloatingActionButton(
-          //     onPressed: () {
-          //       // Handle the '+' button click
-          //     },
-          //     backgroundColor: Colors.grey,
-          //     child: Icon(Icons.add, color: Colors.white),
-          //   ),
-          // ),
           Column(
             children: [
               Padding(
@@ -111,7 +105,7 @@ class CategoryScreen extends StatelessWidget {
         selectedItemColor: Colors.blue, // Customize the selected item color
         unselectedItemColor: Colors.grey, // Customize the unselected item color
         onTap: (index) {
-            switch (index) {
+          switch (index) {
             case 0:
               // Handle 'Reports' tab
               break;
@@ -145,6 +139,55 @@ class CategoryScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   // Handle the '+' button click
+                  if (category.name == 'Sanitation') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Sanitation()),
+                    );
+                    
+                  }
+                  if (category.name == 'Garden Maintenance'){
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Garden()),
+                    );
+                  }
+                  if (category.name == 'Lighting Maintenance'){
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => lighting()),
+                    );
+                  }
+                  if (category.name == 'Road Maintenance'){
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Road()),
+                    );
+                  }
+                  if (category.name == 'Environmental Sanitation'){
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => environment()),
+                    );
+                  }
+                   if (category.name == 'Safety and Security'){
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => safety()),
+                    );
+                  }
+                   if (category.name == 'Utilities'){
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Utilities()),
+                    );
+                  }
+                  if (category.name == 'Transportation'){
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => transportation()),
+                    );
+                  }
                 },
                 child: Text('+'),
               ),
