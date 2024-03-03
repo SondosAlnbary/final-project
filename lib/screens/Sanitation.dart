@@ -1,8 +1,39 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Sanitation extends StatelessWidget {
+class Sanitation extends StatefulWidget {
+  const Sanitation({Key? key}) : super(key: key);
+
+  @override
+  _SanitationState createState() => _SanitationState();
+}
+
+class _SanitationState extends State<Sanitation> {
+  final _firestore = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
+  late User signedInUser;
+  String? messageText;
+  String? messageText1;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser() {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        signedInUser = user;
+        print(signedInUser.email);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,8 +43,7 @@ class Sanitation extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage( 'assets/images/noeye.png'), 
-            
+            image: AssetImage('assets/images/noeye.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -30,7 +60,7 @@ class Sanitation extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.fromLTRB(25.0, 50.0, 25.0, 20.0),
                 decoration: const BoxDecoration(
-                  color: Colors.transparent, // Make the inner container transparent
+                  color: Colors.transparent,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(40.0),
                     topRight: Radius.circular(40.0),
@@ -53,9 +83,12 @@ class Sanitation extends StatelessWidget {
                           height: 40.0,
                         ),
                         TextFormField(
+                          onChanged: (value){
+                            messageText1 = value;
+                          },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter Full name';
+                              return 'Enter the adress';
                             }
                             if (value.length < 2) {
                               return "Username is too short.";
@@ -92,6 +125,9 @@ class Sanitation extends StatelessWidget {
                           height: 25.0,
                         ),
                         TextFormField(
+                          onChanged: (value){
+                            messageText = value;
+                          },
                           maxLines: 5,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -101,7 +137,7 @@ class Sanitation extends StatelessWidget {
                             }
                           },
                           decoration: InputDecoration(
-                            labelText: 'Report description',
+                            labelText: 'Defect description',
                             hintText: 'Enter a description',
                             hintStyle: const TextStyle(
                               color: Colors.black26,
@@ -164,12 +200,26 @@ class Sanitation extends StatelessWidget {
                 ),
               ),
             ),
+            TextButton(
+              onPressed: () {
+                _firestore.collection('Sanitation').add({
+                  'sender':signedInUser.email,
+                  'adress':messageText1,
+                  'Report': messageText,
+
+                });
+              },
+              child: Text('send',
+              style: TextStyle(
+                color: Color.fromARGB(255, 58, 112, 183)
+              ),
+              )
+            )
           ],
         ),
       ),
     );
   }
 }
-
 
 
