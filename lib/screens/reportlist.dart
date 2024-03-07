@@ -47,7 +47,45 @@ class ReportListScreen extends StatelessWidget {
             );
           },
         ),
+        // child: StreamBuilder<QuerySnapshot>(
+        //   stream: FirebaseFirestore.instance.collection('environment').snapshots(),
+        //   builder: (context, snapshot) {
+        //     if (snapshot.connectionState == ConnectionState.waiting) {
+        //       return Center(child: CircularProgressIndicator());
+        //     }
+
+        //     if (!snapshot.hasData || snapshot.data!.docs.isEmpty ?? true) {
+        //       return Center(child: Text('No reports available.'));
+        //     }
+
+        //     final sanitationReports = snapshot.data!.docs.reversed.toList();
+
+        //     return ListView.builder(
+        //       itemCount: sanitationReports.length,
+        //       itemBuilder: (context, index) {
+        //         var sanit = sanitationReports[index];
+        //         return Column(
+        //           children: [
+        //             ListTile(
+        //               title: Text(sanit['sender']),
+        //               subtitle: Column(
+        //                 crossAxisAlignment: CrossAxisAlignment.start,
+        //                 children: [
+        //                   Text(sanit['adress']),
+        //                   Text('Enviroment', style: TextStyle(fontWeight: FontWeight.bold)),
+        //                 ],
+        //               ),
+        //               trailing: Text(sanit['Report']),
+        //             ),
+        //             Divider(),
+        //           ],
+        //         );
+        //       },
+        //     );
+        //   },
+        // ),
       ),
+
     );
   }
 }
