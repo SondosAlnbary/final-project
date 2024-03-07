@@ -7,7 +7,7 @@
  import 'package:final_project/screens/category_screen.dart';
 import 'package:final_project/screens/second_screen.dart'; 
 import 'package:final_project/screens/Admin_signup.dart';
-
+import 'package:final_project/screens/reportlist.dart';
 class BossSignIn extends StatefulWidget {
   const BossSignIn({Key? key}) : super(key: key);
 
@@ -180,7 +180,7 @@ class _SignInScreenState extends State<BossSignIn> {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => CategoryScreen()),
+                                      builder: (context) => ReportListScreen()),
                                 );
               
                                 ScaffoldMessenger.of(context).showSnackBar(

@@ -1,18 +1,49 @@
 import 'package:flutter/material.dart';
-import 'package:final_project/screens/category_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class safety extends StatelessWidget {
+class safety extends StatefulWidget {
+  const safety({Key? key}) : super(key: key);
+
+  @override
+  _safetyState createState() => _safetyState();
+}
+
+class _safetyState extends State<safety> {
+  final _firestore = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
+  late User signedInUser;
+  String? messageText;
+  String? messageText1;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser() {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        signedInUser = user;
+        print(signedInUser.email);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Safety and Security'),
+        title: Text('Sfety and Security'),
       ),
-     body: Container(
+      body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage( 'assets/images/noeye.png'), 
-            
+            image: AssetImage('assets/images/noeye.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -29,7 +60,7 @@ class safety extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.fromLTRB(25.0, 50.0, 25.0, 20.0),
                 decoration: const BoxDecoration(
-                  color: Colors.transparent, // Make the inner container transparent
+                  color: Colors.transparent,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(40.0),
                     topRight: Radius.circular(40.0),
@@ -52,9 +83,12 @@ class safety extends StatelessWidget {
                           height: 40.0,
                         ),
                         TextFormField(
+                          onChanged: (value) {
+                            messageText1 = value;
+                          },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter Full name';
+                              return 'Enter the address';
                             }
                             if (value.length < 2) {
                               return "Username is too short.";
@@ -91,6 +125,9 @@ class safety extends StatelessWidget {
                           height: 25.0,
                         ),
                         TextFormField(
+                          onChanged: (value) {
+                            messageText = value;
+                          },
                           maxLines: 5,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -100,7 +137,7 @@ class safety extends StatelessWidget {
                             }
                           },
                           decoration: InputDecoration(
-                            labelText: 'Report description',
+                            labelText: 'Defect description',
                             hintText: 'Enter a description',
                             hintStyle: const TextStyle(
                               color: Colors.black26,
@@ -163,13 +200,21 @@ class safety extends StatelessWidget {
                 ),
               ),
             ),
+            TextButton(
+                onPressed: () {
+                  _firestore.collection('safety').add({
+                    'sender': signedInUser.email,
+                    'address': messageText1,
+                    'Report': messageText,
+                  });
+                },
+                child: Text(
+                  'send',
+                  style: TextStyle(color: Color.fromARGB(255, 58, 112, 183)),
+                ))
           ],
         ),
       ),
     );
   }
 }
-
-
-
-
