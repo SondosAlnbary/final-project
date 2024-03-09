@@ -38,7 +38,7 @@ class _safetyState extends State<safety> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sfety and Security'),
+        title: Text('Safety and Security'),
       ),
       body: Container(
         decoration: BoxDecoration(

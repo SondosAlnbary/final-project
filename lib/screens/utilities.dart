@@ -88,7 +88,7 @@ class _UtilitiesState extends State<Utilities> {
                           },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Enter the adress';
+                              return 'Enter the address';
                             }
                             if (value.length < 2) {
                               return "Username is too short.";
@@ -204,7 +204,7 @@ class _UtilitiesState extends State<Utilities> {
               onPressed: () {
                 _firestore.collection('Utilities').add({
                   'sender':signedInUser.email,
-                  'adress':messageText1,
+                  'address':messageText1,
                   'Report': messageText,
 
                 });

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Enviroment extends StatefulWidget {
-  const Enviroment({Key? key}) : super(key: key);
+class enviroment extends StatefulWidget {
+  const enviroment({Key? key}) : super(key: key);
 
   @override
-  _EnviromentState createState() => _EnviromentState();
+  _enviromentState createState() => _enviromentState();
 }
 
-class _EnviromentState extends State<Enviroment> {
+class _enviromentState extends State<enviroment> {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
   late User signedInUser;
@@ -76,14 +76,14 @@ class _EnviromentState extends State<Enviroment> {
                           style: TextStyle(
                             fontSize: 30.0,
                             fontWeight: FontWeight.w900,
-                            color: Color.fromARGB(164, 31, 28, 131),
+                            color: Color.fromARGB(255, 214, 30, 30),
                           ),
                         ),
                         const SizedBox(
                           height: 40.0,
                         ),
                         TextFormField(
-                          onChanged: (value) {
+                          onChanged: (value){
                             messageText1 = value;
                           },
                           validator: (value) {
@@ -125,7 +125,7 @@ class _EnviromentState extends State<Enviroment> {
                           height: 25.0,
                         ),
                         TextFormField(
-                          onChanged: (value) {
+                          onChanged: (value){
                             messageText = value;
                           },
                           maxLines: 5,
@@ -203,18 +203,18 @@ class _EnviromentState extends State<Enviroment> {
             TextButton(
               onPressed: () {
                 _firestore.collection('environment').add({
-                  'sender': signedInUser.email,
-                  'address': messageText1,
+                  'sender':signedInUser.email,
+                  'address':messageText1,
                   'Report': messageText,
+
                 });
               },
-              child: Text(
-                'Send',
-                style: TextStyle(
-                  color: Color.fromARGB(255, 58, 112, 183),
-                ),
+              child: Text('send',
+              style: TextStyle(
+                color: Color.fromARGB(255, 58, 112, 183)
               ),
-            ),
+              )
+            )
           ],
         ),
       ),
@@ -222,8 +222,4 @@ class _EnviromentState extends State<Enviroment> {
   }
 }
 
-void main() {
-  runApp(MaterialApp(
-    home: Enviroment(),
-  ));
-}
+

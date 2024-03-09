@@ -167,7 +167,7 @@ class CategoryScreen extends StatelessWidget {
                   if (category.name == 'Environmental Sanitation'){
                       Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Enviroment()),
+                      MaterialPageRoute(builder: (context) => enviroment()),
                     );
                   }
                    if (category.name == 'Safety and Security'){

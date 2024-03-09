@@ -88,7 +88,7 @@ class _SanitationState extends State<Sanitation> {
                           },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Enter the adress';
+                              return 'Enter the address';
                             }
                             if (value.length < 2) {
                               return "Username is too short.";
@@ -204,7 +204,7 @@ class _SanitationState extends State<Sanitation> {
               onPressed: () {
                 _firestore.collection('Sanitation').add({
                   'sender':signedInUser.email,
-                  'adress':messageText1,
+                  'address':messageText1,
                   'Report': messageText,
 
                 });
