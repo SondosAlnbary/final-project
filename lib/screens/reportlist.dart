@@ -1,6 +1,7 @@
  import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/screens/utilities.dart';
+import 'welcome_screen.dart';
 
 class ReportListScreen extends StatefulWidget {
   @override
@@ -18,6 +19,17 @@ class _ReportListScreenState extends State<ReportListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Report List'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => WelcomeScreen()),
+              );
+            },
+          ),
+        ],
       ),
       body: Container(
         color: Colors.blueGrey[100], // Set the background color here

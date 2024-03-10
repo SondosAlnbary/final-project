@@ -81,6 +81,7 @@ class CategoryScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return buildCategoryItem(context, categories[index]);
                   },
+                  
                 ),
               ),
             ],
