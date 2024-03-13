@@ -15,6 +15,7 @@ import 'Sanitation.dart';
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({Key? key});
 
+
   @override
   Widget build(BuildContext context) {
     List<CategoryInfo> categories = [
@@ -31,7 +32,7 @@ class CategoryScreen extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('Reports'),
+        title: Text('Categories'),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -45,7 +46,10 @@ class CategoryScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Stack(
+    
+        
+      body: 
+      Stack(
         children: [
           Image.asset(
             'assets/images/noeye.png',
@@ -91,8 +95,8 @@ class CategoryScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
-            label: 'Reports',
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.mail),

@@ -18,6 +18,7 @@ class _ReportListScreenState extends State<ReportListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text('Report List'),
         actions: [
           IconButton(
