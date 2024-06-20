@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:final_project/screens/utilities.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'welcome_screen.dart';
@@ -146,6 +145,13 @@ class ReportItem extends StatefulWidget {
 class _ReportItemState extends State<ReportItem> {
   String? _selectedValue;
 
+  void _deleteReport() async {
+    await FirebaseFirestore.instance
+        .collection(widget.selectedCollection)
+        .doc(widget.report.id)
+        .delete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -185,14 +191,25 @@ class _ReportItemState extends State<ReportItem> {
                     ),
                   ],
                 ),
-                trailing: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 150),
-                  child: Text(
-                    widget.report['Report'],
-                    style: TextStyle(fontSize: 14),
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 150),
+                      child: Text(
+                        widget.report['Report'],
+                        style: TextStyle(fontSize: 14),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        _deleteReport();
+                      },
+                    ),
+                  ],
                 ),
               ),
               Row(
