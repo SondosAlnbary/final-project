@@ -13,6 +13,7 @@ class _safetyState extends State<safety> {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
   late User signedInUser;
+  String? userName;
   String? messageText;
   String? messageText1;
 
@@ -28,12 +29,25 @@ class _safetyState extends State<safety> {
       if (user != null) {
         signedInUser = user;
         print(signedInUser.email);
+        getUserName();
       }
     } catch (e) {
       print(e);
     }
   }
 
+ Future<void> getUserName() async {
+    try {
+      DocumentSnapshot userDoc = await _firestore.collection('user').doc(signedInUser.uid).get();
+      if (userDoc.exists) {
+        setState(() {
+          userName = userDoc['name'];
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -204,6 +218,7 @@ class _safetyState extends State<safety> {
                 onPressed: () {
                   _firestore.collection('safety').add({
                     'sender': signedInUser.email,
+                    'name': userName,
                     'address': messageText1,
                     'Report': messageText,
                   });

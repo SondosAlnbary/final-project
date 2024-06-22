@@ -13,6 +13,7 @@ class _UtilitiesState extends State<Utilities> {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
   late User signedInUser;
+  String? userName;
   String? messageText;
   String? messageText1;
 
@@ -28,6 +29,19 @@ class _UtilitiesState extends State<Utilities> {
       if (user != null) {
         signedInUser = user;
         print(signedInUser.email);
+         getUserName();
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+  Future<void> getUserName() async {
+    try {
+      DocumentSnapshot userDoc = await _firestore.collection('user').doc(signedInUser.uid).get();
+      if (userDoc.exists) {
+        setState(() {
+          userName = userDoc['name'];
+        });
       }
     } catch (e) {
       print(e);
@@ -38,7 +52,7 @@ class _UtilitiesState extends State<Utilities> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sanitation'),
+        title: Text('Utilities'),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -76,7 +90,7 @@ class _UtilitiesState extends State<Utilities> {
                           style: TextStyle(
                             fontSize: 30.0,
                             fontWeight: FontWeight.w900,
-                            color: Color.fromARGB(255, 214, 30, 30),
+                            color: Color.fromARGB(255, 253, 253, 253),
                           ),
                         ),
                         const SizedBox(
@@ -204,6 +218,7 @@ class _UtilitiesState extends State<Utilities> {
               onPressed: () {
                 _firestore.collection('Utilities').add({
                   'sender':signedInUser.email,
+                  'name': userName,
                   'address':messageText1,
                   'Report': messageText,
 

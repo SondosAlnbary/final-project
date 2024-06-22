@@ -13,6 +13,7 @@ class _roadState extends State<Road> {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
   late User signedInUser;
+  String? userName;
   String? messageText;
   String? messageText1;
 
@@ -28,6 +29,20 @@ class _roadState extends State<Road> {
       if (user != null) {
         signedInUser = user;
         print(signedInUser.email);
+        getUserName();
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+Future<void> getUserName() async {
+    try {
+      DocumentSnapshot userDoc = await _firestore.collection('user').doc(signedInUser.uid).get();
+      if (userDoc.exists) {
+        setState(() {
+          userName = userDoc['name'];
+        });
       }
     } catch (e) {
       print(e);
@@ -204,6 +219,7 @@ class _roadState extends State<Road> {
                 onPressed: () {
                   _firestore.collection('road').add({
                     'sender': signedInUser.email,
+                    'name': userName,
                     'address': messageText1,
                     'Report': messageText,
                   });

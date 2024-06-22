@@ -13,6 +13,7 @@ class _lightingState extends State<lighting> {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
   late User signedInUser;
+  String? userName;
   String? messageText;
   String? messageText1;
 
@@ -28,6 +29,20 @@ class _lightingState extends State<lighting> {
       if (user != null) {
         signedInUser = user;
         print(signedInUser.email);
+        getUserName();
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+Future<void> getUserName() async {
+    try {
+      DocumentSnapshot userDoc = await _firestore.collection('user').doc(signedInUser.uid).get();
+      if (userDoc.exists) {
+        setState(() {
+          userName = userDoc['name'];
+        });
       }
     } catch (e) {
       print(e);
@@ -204,6 +219,7 @@ class _lightingState extends State<lighting> {
                 onPressed: () {
                   _firestore.collection('lighting').add({
                     'sender': signedInUser.email,
+                    'name': userName,
                     'address': messageText1,
                     'Report': messageText,
                   });

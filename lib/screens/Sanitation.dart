@@ -13,6 +13,7 @@ class _SanitationState extends State<Sanitation> {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
   late User signedInUser;
+  String? userName;
   String? messageText;
   String? messageText1;
 
@@ -22,12 +23,26 @@ class _SanitationState extends State<Sanitation> {
     getCurrentUser();
   }
 
-  void getCurrentUser() {
+  void getCurrentUser() async {
     try {
       final user = _auth.currentUser;
       if (user != null) {
         signedInUser = user;
         print(signedInUser.email);
+        await getUserName();
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> getUserName() async {
+    try {
+      DocumentSnapshot userDoc = await _firestore.collection('user').doc(signedInUser.uid).get();
+      if (userDoc.exists) {
+        setState(() {
+          userName = userDoc['name'];
+        });
       }
     } catch (e) {
       print(e);
@@ -76,14 +91,14 @@ class _SanitationState extends State<Sanitation> {
                           style: TextStyle(
                             fontSize: 30.0,
                             fontWeight: FontWeight.w900,
-                            color: Color.fromARGB(255, 214, 30, 30),
+                            color: Color.fromARGB(255, 255, 255, 255),
                           ),
                         ),
                         const SizedBox(
                           height: 40.0,
                         ),
                         TextFormField(
-                          onChanged: (value){
+                          onChanged: (value) {
                             messageText1 = value;
                           },
                           validator: (value) {
@@ -125,7 +140,7 @@ class _SanitationState extends State<Sanitation> {
                           height: 25.0,
                         ),
                         TextFormField(
-                          onChanged: (value){
+                          onChanged: (value) {
                             messageText = value;
                           },
                           maxLines: 5,
@@ -203,18 +218,19 @@ class _SanitationState extends State<Sanitation> {
             TextButton(
               onPressed: () {
                 _firestore.collection('Sanitation').add({
-                  'sender':signedInUser.email,
-                  'address':messageText1,
+                  'sender': signedInUser.email,
+                  'name': userName,
+                  'address': messageText1,
                   'Report': messageText,
-
                 });
               },
-              child: Text('send',
-              style: TextStyle(
-                color: Color.fromARGB(255, 58, 112, 183)
+              child: Text(
+                'Send',
+                style: TextStyle(
+                  color: Color.fromARGB(255, 58, 112, 183),
+                ),
               ),
-              )
-            )
+            ),
           ],
         ),
       ),
