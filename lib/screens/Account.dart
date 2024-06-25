@@ -19,7 +19,7 @@
 //     'Sanitation', 'environment', 'garden', 'road', 'lighting', 'safety', 'Utilities', 'transportation'
 //   ]; // Add your collection names here
 
-//   String selectedCollection = 'Sanitation'; // Initial collection
+//   List<QueryDocumentSnapshot> allReports = [];
 
 //   @override
 //   void initState() {
@@ -44,11 +44,11 @@
 //       DocumentSnapshot userDoc = await _firestore.collection('user').doc(signedInUser!.uid).get();
 //       if (userDoc.exists) {
 //         setState(() {
-//           email = userDoc['name'];
+//           email = userDoc['email'];
 //         });
 
 //         print(email);
-//         fetchReportsForUser(email!); // Fetch reports after getting the username
+//         await fetchReportsForUser(email!); // Fetch reports after getting the username
 //       }
 //     } catch (e) {
 //       print(e);
@@ -56,7 +56,17 @@
 //   }
 
 //   Future<void> fetchReportsForUser(String email) async {
-//     // Your implementation for fetching reports for the user
+//     List<QueryDocumentSnapshot> reports = [];
+
+//     for (String collection in collections) {
+//       QuerySnapshot snapshot = await _firestore.collection(collection).where('sender', isEqualTo: email).get();
+//       reports.addAll(snapshot.docs);
+//       print(reports);
+//     }
+
+//     setState(() {
+//       allReports = reports;
+//     });
 //   }
 
 //   @override
@@ -81,75 +91,32 @@
 //           SafeArea(
 //             child: Column(
 //               children: [
-//                 Container(
-//                   margin: EdgeInsets.all(8.0),
-//                   padding: EdgeInsets.all(8.0),
-//                   decoration: BoxDecoration(
-//                     color: Colors.white,
-//                     borderRadius: BorderRadius.circular(8.0),
-//                     boxShadow: [
-//                       BoxShadow(
-//                         color: Colors.grey.withOpacity(0.5),
-//                         spreadRadius: 2,
-//                         blurRadius: 5,
-//                         offset: Offset(0, 3),
-//                       ),
-//                     ],
-//                   ),
-//                   child: DropdownButton<String>(
-//                     value: selectedCollection,
-//                     onChanged: (String? newValue) async {
-//                       bool exists = await doesCollectionExist(newValue!);
-//                       setState(() {
-//                         selectedCollection = exists ? newValue : 'Sanitation';
-//                       });
-//                     },
-//                     items: collections.map<DropdownMenuItem<String>>((String value) {
-//                       return DropdownMenuItem<String>(
-//                         value: value,
-//                         child: Text(
-//                           value,
-//                           style: TextStyle(fontSize: 18),
-//                         ),
-//                       );
-//                     }).toList(),
+//                 Padding(
+//                   padding: const EdgeInsets.all(16.0),
+//                   child: Text(
+//                     email ?? 'Loading...',
+//                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
 //                   ),
 //                 ),
 //                 Expanded(
-//                   child: StreamBuilder<QuerySnapshot>(
-//                     stream: FirebaseFirestore.instance
-//                         .collection(selectedCollection)
-//                         .where('sender', isNotEqualTo: '')
-//                         .snapshots(),
-//                     builder: (context, snapshot) {
-//                       if (snapshot.connectionState == ConnectionState.waiting) {
-//                         return Center(child: CircularProgressIndicator());
-//                       }
-
-//                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-//                         return Center(
+//                   child: allReports.isEmpty
+//                       ? Center(
 //                           child: Text(
 //                             'No reports available.',
 //                             style: TextStyle(fontSize: 18),
 //                           ),
-//                         );
-//                       }
-
-//                       final reports = snapshot.data!.docs.reversed.toList();
-
-//                       return ListView.builder(
-//                         padding: EdgeInsets.only(bottom: 20.0),
-//                         itemCount: reports.length,
-//                         itemBuilder: (context, index) {
-//                           var report = reports[index];
-//                           return ReportItem(
-//                             report: report,
-//                             selectedCollection: selectedCollection,
-//                           );
-//                         },
-//                       );
-//                     },
-//                   ),
+//                         )
+//                       : ListView.builder(
+//                           padding: EdgeInsets.only(bottom: 20.0),
+//                           itemCount: allReports.length,
+//                           itemBuilder: (context, index) {
+//                             var report = allReports[index];
+//                             return ReportItem(
+//                               report: report,
+//                               selectedCollection: getCollectionName(report.reference.path),
+//                             );
+//                           },
+//                         ),
 //                 ),
 //               ],
 //             ),
@@ -159,10 +126,8 @@
 //     );
 //   }
 
-//   Future<bool> doesCollectionExist(String collectionName) async {
-//     var collectionRef = FirebaseFirestore.instance.collection(collectionName);
-//     var docSnapshot = await collectionRef.limit(1).get();
-//     return docSnapshot.docs.isNotEmpty;
+//   String getCollectionName(String path) {
+//     return path.split('/').first;
 //   }
 // }
 
@@ -201,10 +166,6 @@
 //           child: Column(
 //             children: [
 //               ListTile(
-//                 title: Text(
-//                   widget.report['sender'],
-//                   style: TextStyle(fontSize: 16),
-//                 ),
 //                 subtitle: Column(
 //                   crossAxisAlignment: CrossAxisAlignment.start,
 //                   children: [
@@ -241,6 +202,7 @@
 //     );
 //   }
 // }
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -257,6 +219,7 @@ class _AccountState extends State<AccountScreen> {
   final _auth = FirebaseAuth.instance;
   User? signedInUser;
   String? email;
+  String? username; // Added username field
   List<String> collections = [
     'Sanitation', 'environment', 'garden', 'road', 'lighting', 'safety', 'Utilities', 'transportation'
   ]; // Add your collection names here
@@ -274,23 +237,24 @@ class _AccountState extends State<AccountScreen> {
       final user = _auth.currentUser;
       if (user != null) {
         signedInUser = user;
-        await getUserName();
+        await getUserDetails();
       }
     } catch (e) {
       print(e);
     }
   }
 
-  Future<void> getUserName() async {
+  Future<void> getUserDetails() async {
     try {
       DocumentSnapshot userDoc = await _firestore.collection('user').doc(signedInUser!.uid).get();
       if (userDoc.exists) {
         setState(() {
           email = userDoc['email'];
+          username = userDoc['name']; // Assuming the field name in Firestore is 'name'
         });
 
-        print(email);
-        await fetchReportsForUser(email!); // Fetch reports after getting the username
+        print('Email: $email, Username: $username');
+        await fetchReportsForUser(email!); // Fetch reports after getting the user details
       }
     } catch (e) {
       print(e);
@@ -336,7 +300,7 @@ class _AccountState extends State<AccountScreen> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    email ?? 'Loading...',
+                    'Hello ${username ?? 'Loading...'}', // Greeting with the username
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),

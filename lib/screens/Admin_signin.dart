@@ -50,7 +50,7 @@ class _SignInScreenState extends State<BossSignIn> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        'Welcome back Admin',
+                        'Welcome back Manager',
                         style: TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.w900,
