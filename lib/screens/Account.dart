@@ -219,7 +219,7 @@ class _AccountState extends State<AccountScreen> {
   final _auth = FirebaseAuth.instance;
   User? signedInUser;
   String? email;
-  String? username; // Added username field
+  String? username;
   List<String> collections = [
     'Sanitation', 'environment', 'garden', 'road', 'lighting', 'safety', 'Utilities', 'transportation'
   ]; // Add your collection names here
@@ -250,7 +250,7 @@ class _AccountState extends State<AccountScreen> {
       if (userDoc.exists) {
         setState(() {
           email = userDoc['email'];
-          username = userDoc['name']; // Assuming the field name in Firestore is 'name'
+          username = userDoc['name'];
         });
 
         print('Email: $email, Username: $username');
@@ -352,6 +352,9 @@ class _ReportItemState extends State<ReportItem> {
 
   @override
   Widget build(BuildContext context) {
+    // Fetch the "situation" field from the report
+    String situation = widget.report['situation'] ?? 'Unknown';
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -383,6 +386,10 @@ class _ReportItemState extends State<ReportItem> {
                       widget.selectedCollection,
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                     ),
+                    Text(
+                      'Situation: $situation', // Display the "situation" field
+                      style: TextStyle(fontSize: 14, color: Colors.blueAccent),
+                    ),
                   ],
                 ),
                 trailing: Row(
@@ -408,3 +415,4 @@ class _ReportItemState extends State<ReportItem> {
     );
   }
 }
+
