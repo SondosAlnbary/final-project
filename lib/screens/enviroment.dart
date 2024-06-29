@@ -48,6 +48,13 @@ Future<void> getUserName() async {
       print(e);
     }
   }
+void _showSnackbar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 3),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -224,6 +231,7 @@ Future<void> getUserName() async {
                   'Report': messageText,
 
                 });
+                _showSnackbar(context, 'Report received');
               },
               child: Text('send',
               style: TextStyle(

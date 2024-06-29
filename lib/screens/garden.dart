@@ -48,6 +48,13 @@ class _GardenState extends State<Garden> {
       print(e);
     }
   }
+void _showSnackbar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 3),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -223,6 +230,7 @@ class _GardenState extends State<Garden> {
                     'address': messageText1,
                     'Report': messageText,
                   });
+                  _showSnackbar(context, 'Report received');
                 },
                 child: Text(
                   'send',

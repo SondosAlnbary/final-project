@@ -48,6 +48,14 @@ class _safetyState extends State<safety> {
       print(e);
     }
   }
+void _showSnackbar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 3),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -222,6 +230,8 @@ class _safetyState extends State<safety> {
                     'address': messageText1,
                     'Report': messageText,
                   });
+                 _showSnackbar(context, 'Report received');
+
                 },
                 child: Text(
                   'send',

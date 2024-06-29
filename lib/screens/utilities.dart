@@ -48,6 +48,14 @@ class _UtilitiesState extends State<Utilities> {
     }
   }
 
+void _showSnackbar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 3),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -223,6 +231,7 @@ class _UtilitiesState extends State<Utilities> {
                   'Report': messageText,
 
                 });
+                _showSnackbar(context, 'Report received');
               },
               child: Text('send',
               style: TextStyle(
