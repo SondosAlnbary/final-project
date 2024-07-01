@@ -85,7 +85,7 @@ class SecondScreen extends StatelessWidget {
                               Expanded(
                                 child: Divider(
                                   thickness: 0.7,
-                                  color: Colors.grey.withOpacity(0.5),
+                                  color: Color.fromARGB(255, 205, 146, 29).withOpacity(0.5),
                                 ),
                               ),
                               const Padding(
