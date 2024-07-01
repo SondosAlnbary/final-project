@@ -1,6 +1,4 @@
-
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'welcome_screen.dart';
 import 'ContactUs.dart';
 import 'Account.dart';
@@ -23,7 +21,7 @@ class CategoryScreen extends StatefulWidget {
 class _CategoryScreenState extends State<CategoryScreen> {
   int _selectedIndex = 0;
 
-  List<Widget> _screens = [
+  final List<Widget> _screens = [
     CategoryListScreen(),
     ContactUsScreen(),
     AccountScreen(),
@@ -40,11 +38,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('Categories'),
+        title: const Text('Categories'),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: () {
               Navigator.pushReplacement(
                 context,
@@ -56,7 +54,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       ),
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
@@ -71,9 +69,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Color.fromARGB(255, 223, 160, 104),
-        unselectedItemColor: const Color.fromARGB(255, 255, 255, 255),
-                backgroundColor: Color.fromARGB(255, 91, 109, 132), 
+        selectedItemColor: const Color.fromARGB(255, 223, 160, 104),
+        unselectedItemColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 91, 109, 132),
         onTap: _onItemTapped,
       ),
     );
@@ -83,15 +81,47 @@ class _CategoryScreenState extends State<CategoryScreen> {
 class CategoryListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    List<CategoryInfo> categories = [
-      CategoryInfo(name: 'Sanitation', icon: Icons.cleaning_services),
-      CategoryInfo(name: 'Garden Maintenance', icon: Icons.park_rounded),
-      CategoryInfo(name: 'Lighting Maintenance', icon: FontAwesomeIcons.lightbulb),
-      CategoryInfo(name: 'Road Maintenance', icon: Icons.settings),
-      CategoryInfo(name: 'Environmental Sanitation', icon: Icons.eco),
-      CategoryInfo(name: 'Safety and Security', icon: Icons.safety_check),
-      CategoryInfo(name: 'Utilities', icon: Icons.electric_bolt),
-      CategoryInfo(name: 'Transportation', icon: Icons.emoji_transportation_sharp),
+    final List<CategoryInfo> categories = [
+      CategoryInfo(
+        name: 'Sanitation',
+        icon: Icons.cleaning_services,
+        imagePath: 'assets/images/sanitation.png',
+      ),
+      CategoryInfo(
+        name: 'Garden Maintenance',
+        icon: Icons.park_rounded,
+        imagePath: 'assets/images/garden.png',
+      ),
+      CategoryInfo(
+        name: 'Lighting Maintenance',
+        icon: Icons.lightbulb,
+        imagePath: 'assets/images/light.png',
+      ),
+      CategoryInfo(
+        name: 'Road Maintenance',
+        icon: Icons.settings,
+        imagePath: 'assets/images/road.png',
+      ),
+      CategoryInfo(
+        name: 'Environment',
+        icon: Icons.eco,
+        imagePath: 'assets/images/enviroment.png',
+      ),
+      CategoryInfo(
+        name: 'Safety',
+         icon: Icons.safety_check,
+         imagePath: 'assets/images/safety.png',
+        ),
+      CategoryInfo(
+        name: 'Utilities', 
+        icon: Icons.electric_bolt,
+        imagePath: 'assets/images/utilities.png',
+        ),
+      CategoryInfo(
+        name: 'Transportation', 
+        icon: Icons.emoji_transportation_sharp,
+         imagePath: 'assets/images/transportation.png',
+        ),
     ];
 
     return Stack(
@@ -105,27 +135,27 @@ class CategoryListScreen extends StatelessWidget {
         Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 50.0),
+              padding: const EdgeInsets.only(top: 100.0),
               child: Align(
                 alignment: Alignment.center,
                 child: Text(
-                  'Reports',
+                  'Which service do you need?',
                   style: TextStyle(
                     fontSize: 24.0,
                     fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(62, 104, 156, 1),
+                    color: Colors.black,
                   ),
                 ),
               ),
             ),
             Expanded(
               child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 8.0,
                   mainAxisSpacing: 8.0,
                 ),
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 itemCount: categories.length,
                 itemBuilder: (context, index) {
                   return buildCategoryItem(context, categories[index]);
@@ -148,7 +178,6 @@ class CategoryListScreen extends StatelessWidget {
               Text('Selected category: ${category.name}'),
               ElevatedButton(
                 onPressed: () {
-                  // Handle the '+' button click
                   switch (category.name) {
                     case 'Sanitation':
                       Navigator.push(
@@ -200,11 +229,11 @@ class CategoryListScreen extends StatelessWidget {
                       break;
                   }
                 },
-                child: Text('+'),
+                child: const Text('+'),
               ),
             ],
           ),
-          backgroundColor: Color.fromRGBO(255, 69, 108, 140),
+          backgroundColor: Colors.pinkAccent,
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       },
@@ -213,20 +242,29 @@ class CategoryListScreen extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              category.icon,
-              size: 30.0,
-              color: Color.fromARGB(255, 69, 108, 140),
-            ),
-            SizedBox(height: 8.0),
-            Text(
-              category.name,
-              style: TextStyle(fontSize: 18.0),
-            ),
-          ],
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (category.imagePath != null)
+                Image.asset(
+                  category.imagePath!,
+                  width: 150.0,
+                  height: 150.0,
+                )
+              else
+                Icon(
+                  category.icon,
+                  size: 60.0,
+                  color: const Color.fromARGB(255, 69, 108, 140),
+                ),
+              const SizedBox(height: 8.0),
+              Text(
+                category.name,
+                style: const TextStyle(fontSize: 18.0),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -236,6 +274,7 @@ class CategoryListScreen extends StatelessWidget {
 class CategoryInfo {
   final String name;
   final IconData icon;
+  final String? imagePath;
 
-  CategoryInfo({required this.name, required this.icon});
+  CategoryInfo({required this.name, required this.icon, this.imagePath});
 }
