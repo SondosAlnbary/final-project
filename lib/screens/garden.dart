@@ -98,7 +98,7 @@ void _showSnackbar(BuildContext context, String message) {
                           style: TextStyle(
                             fontSize: 30.0,
                             fontWeight: FontWeight.w900,
-                            color: Color.fromARGB(255, 214, 30, 30),
+                            color: Color.fromARGB(255, 39, 158, 57),
                           ),
                         ),
                         const SizedBox(
@@ -232,10 +232,13 @@ void _showSnackbar(BuildContext context, String message) {
                   });
                   _showSnackbar(context, 'Report received');
                 },
-                child: Text(
-                  'send',
-                  style: TextStyle(color: Color.fromARGB(255, 58, 112, 183)),
-                ))
+               child: Text('send',
+              style: TextStyle(
+                fontSize: 20,
+                color: Color.fromARGB(255, 255, 255, 255)
+              ),
+              )
+                )
           ],
         ),
       ),

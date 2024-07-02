@@ -2,14 +2,6 @@ import 'package:flutter/material.dart';
 import 'welcome_screen.dart';
 import 'ContactUs.dart';
 import 'Account.dart';
-import 'Sanitation.dart';
-import 'enviroment.dart';
-import 'garden.dart';
-import 'lighting.dart';
-import 'road.dart';
-import 'safety.dart';
-import 'transportation.dart';
-import 'utilities.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({Key? key}) : super(key: key);
@@ -38,7 +30,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('Categories'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -52,7 +45,17 @@ class _CategoryScreenState extends State<CategoryScreen> {
           ),
         ],
       ),
-      body: _screens[_selectedIndex],
+      body: Stack(
+        children: [
+          Image.asset(
+            'assets/images/noeye.png',
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          ),
+          _screens[_selectedIndex],
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
@@ -69,9 +72,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: const Color.fromARGB(255, 223, 160, 104),
+        selectedItemColor: Color.fromARGB(255, 242, 154, 30),
         unselectedItemColor: Colors.white,
-        backgroundColor: const Color.fromARGB(255, 91, 109, 132),
+        backgroundColor: Color.fromARGB(255, 108, 66, 133),
         onTap: _onItemTapped,
       ),
     );
@@ -109,60 +112,50 @@ class CategoryListScreen extends StatelessWidget {
       ),
       CategoryInfo(
         name: 'Safety',
-         icon: Icons.safety_check,
-         imagePath: 'assets/images/safety.png',
-        ),
+        icon: Icons.safety_check,
+        imagePath: 'assets/images/safety.png',
+      ),
       CategoryInfo(
-        name: 'Utilities', 
+        name: 'Utilities',
         icon: Icons.electric_bolt,
         imagePath: 'assets/images/utilities.png',
-        ),
+      ),
       CategoryInfo(
-        name: 'Transportation', 
+        name: 'Transportation',
         icon: Icons.emoji_transportation_sharp,
-         imagePath: 'assets/images/transportation.png',
-        ),
+        imagePath: 'assets/images/transportation.png',
+      ),
     ];
 
-    return Stack(
+    return Column(
       children: [
-        Image.asset(
-          'assets/images/noeye.png',
-          fit: BoxFit.cover,
-          width: double.infinity,
-          height: double.infinity,
+        Padding(
+          padding: const EdgeInsets.only(top: 100.0),
+          child: Align(
+            alignment: Alignment.center,
+            child: Text(
+              'Which service do you need?',
+              style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          ),
         ),
-        Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 100.0),
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'Which service do you need?',
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
+        Expanded(
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 8.0,
             ),
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 8.0,
-                  mainAxisSpacing: 8.0,
-                ),
-                padding: const EdgeInsets.all(8.0),
-                itemCount: categories.length,
-                itemBuilder: (context, index) {
-                  return buildCategoryItem(context, categories[index]);
-                },
-              ),
-            ),
-          ],
+            padding: const EdgeInsets.all(8.0),
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              return buildCategoryItem(context, categories[index]);
+            },
+          ),
         ),
       ],
     );
@@ -171,71 +164,7 @@ class CategoryListScreen extends StatelessWidget {
   Widget buildCategoryItem(BuildContext context, CategoryInfo category) {
     return GestureDetector(
       onTap: () {
-        final snackBar = SnackBar(
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Selected category: ${category.name}'),
-              ElevatedButton(
-                onPressed: () {
-                  switch (category.name) {
-                    case 'Sanitation':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Sanitation()),
-                      );
-                      break;
-                    case 'Garden Maintenance':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Garden()),
-                      );
-                      break;
-                    case 'Lighting Maintenance':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => lighting()),
-                      );
-                      break;
-                    case 'Road Maintenance':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Road()),
-                      );
-                      break;
-                    case 'Environmental Sanitation':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => enviroment()),
-                      );
-                      break;
-                    case 'Safety and Security':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => safety()),
-                      );
-                      break;
-                    case 'Utilities':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Utilities()),
-                      );
-                      break;
-                    case 'Transportation':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => transportation()),
-                      );
-                      break;
-                  }
-                },
-                child: const Text('+'),
-              ),
-            ],
-          ),
-          backgroundColor: Colors.pinkAccent,
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // Navigate to different screens based on category.name
       },
       child: Container(
         decoration: BoxDecoration(

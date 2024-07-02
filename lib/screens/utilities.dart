@@ -235,7 +235,8 @@ void _showSnackbar(BuildContext context, String message) {
               },
               child: Text('send',
               style: TextStyle(
-                color: Color.fromARGB(255, 58, 112, 183)
+                fontSize: 20,
+                color: Color.fromARGB(255, 255, 255, 255)
               ),
               )
             )
@@ -245,5 +246,4 @@ void _showSnackbar(BuildContext context, String message) {
     );
   }
 }
-
 

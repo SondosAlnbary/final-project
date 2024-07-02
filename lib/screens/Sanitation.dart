@@ -99,7 +99,7 @@ class _SanitationState extends State<Sanitation> {
                           style: TextStyle(
                             fontSize: 30.0,
                             fontWeight: FontWeight.w900,
-                            color: Color.fromARGB(255, 255, 255, 255),
+                            color: Color.fromARGB(255, 45, 126, 219),
                           ),
                         ),
                         const SizedBox(
@@ -233,12 +233,12 @@ class _SanitationState extends State<Sanitation> {
                 });
                 _showSnackbar(context, 'Report received');
               },
-              child: Text(
-                'Send',
-                style: TextStyle(
-                  color: Color.fromARGB(255, 58, 112, 183),
-                ),
+             child: Text('send',
+              style: TextStyle(
+                fontSize: 20,
+                color: Color.fromARGB(255, 255, 255, 255)
               ),
+              )
             ),
           ],
         ),
