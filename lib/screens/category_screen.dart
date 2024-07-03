@@ -2,6 +2,14 @@ import 'package:flutter/material.dart';
 import 'welcome_screen.dart';
 import 'ContactUs.dart';
 import 'Account.dart';
+import 'Sanitation.dart';
+import 'enviroment.dart';
+import 'garden.dart';
+import 'lighting.dart';
+import 'road.dart';
+import 'safety.dart';
+import 'transportation.dart';
+import 'utilities.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({Key? key}) : super(key: key);
@@ -72,9 +80,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Color.fromARGB(255, 242, 154, 30),
+        selectedItemColor: Color.fromARGB(255, 44, 180, 210),
         unselectedItemColor: Colors.white,
-        backgroundColor: Color.fromARGB(255, 108, 66, 133),
+        backgroundColor: Color.fromARGB(255, 177, 87, 13),
         onTap: _onItemTapped,
       ),
     );
@@ -164,7 +172,59 @@ class CategoryListScreen extends StatelessWidget {
   Widget buildCategoryItem(BuildContext context, CategoryInfo category) {
     return GestureDetector(
       onTap: () {
-        // Navigate to different screens based on category.name
+        switch (category.name) {
+          case 'Sanitation':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Sanitation()),
+            );
+            break;
+          case 'Garden Maintenance':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Garden()),
+            );
+            break;
+          case 'Lighting Maintenance':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => lighting()),
+            );
+            break;
+          case 'Road Maintenance':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Road()),
+            );
+            break;
+          case 'Environment':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => enviroment()),
+            );
+            break;
+          case 'Safety':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => safety()),
+            );
+            break;
+          case 'Utilities':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Utilities()),
+            );
+            break;
+          case 'Transportation':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => transportation()),
+            );
+            break;
+          default:
+            // Handle cases where the category does not match any known case
+            break;
+        }
       },
       child: Container(
         decoration: BoxDecoration(

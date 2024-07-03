@@ -59,9 +59,7 @@ void _showSnackbar(BuildContext context, String message) {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Garden maintenance'),
-      ),
+      
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(

@@ -29,12 +29,13 @@ class _UtilitiesState extends State<Utilities> {
       if (user != null) {
         signedInUser = user;
         print(signedInUser.email);
-         getUserName();
+        getUserName();
       }
     } catch (e) {
       print(e);
     }
   }
+
   Future<void> getUserName() async {
     try {
       DocumentSnapshot userDoc = await _firestore.collection('user').doc(signedInUser.uid).get();
@@ -48,7 +49,7 @@ class _UtilitiesState extends State<Utilities> {
     }
   }
 
-void _showSnackbar(BuildContext context, String message) {
+  void _showSnackbar(BuildContext context, String message) {
     final snackBar = SnackBar(
       content: Text(message),
       duration: Duration(seconds: 3),
@@ -105,7 +106,7 @@ void _showSnackbar(BuildContext context, String message) {
                           height: 40.0,
                         ),
                         TextFormField(
-                          onChanged: (value){
+                          onChanged: (value) {
                             messageText1 = value;
                           },
                           validator: (value) {
@@ -147,7 +148,7 @@ void _showSnackbar(BuildContext context, String message) {
                           height: 25.0,
                         ),
                         TextFormField(
-                          onChanged: (value){
+                          onChanged: (value) {
                             messageText = value;
                           },
                           maxLines: 5,
@@ -216,34 +217,57 @@ void _showSnackbar(BuildContext context, String message) {
                         const SizedBox(
                           height: 20.0,
                         ),
+                        TextButton(
+                          onPressed: () {
+                            _firestore.collection('Utilities').add({
+                              'sender': signedInUser.email,
+                              'name': userName,
+                              'address': messageText1,
+                              'Report': messageText,
+                            });
+                            _showSnackbar(context, 'Report received');
+                          },
+                          child: Text(
+                            'Send',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Color.fromARGB(255, 255, 255, 255),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20.0,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            _firestore.collection('Emergency').add({
+                              'sender': signedInUser.email,
+                              'name': userName,
+                              'address': 'Emergency Address', // or use predefined value
+                              'Report': 'Emergency Report',
+                            });
+                            _showSnackbar(context, 'Emergency report sent');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
+                          child: Text(
+                            'Emergency',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ),
               ),
             ),
-            TextButton(
-              onPressed: () {
-                _firestore.collection('Utilities').add({
-                  'sender':signedInUser.email,
-                  'name': userName,
-                  'address':messageText1,
-                  'Report': messageText,
-
-                });
-                _showSnackbar(context, 'Report received');
-              },
-              child: Text('send',
-              style: TextStyle(
-                fontSize: 20,
-                color: Color.fromARGB(255, 255, 255, 255)
-              ),
-              )
-            )
           ],
         ),
       ),
     );
   }
 }
-
