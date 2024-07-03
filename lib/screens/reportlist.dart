@@ -145,24 +145,11 @@ class ReportItem extends StatefulWidget {
 class _ReportItemState extends State<ReportItem> {
   String? _selectedValue;
 
-  @override
-  void initState() {
-    super.initState();
-    _selectedValue = widget.report['situation']; // Initialize with the current value
-  }
-
   void _deleteReport() async {
     await FirebaseFirestore.instance
         .collection(widget.selectedCollection)
         .doc(widget.report.id)
         .delete();
-  }
-
-  void _updateSituation(String situation) async {
-    await FirebaseFirestore.instance
-        .collection(widget.selectedCollection)
-        .doc(widget.report.id)
-        .update({'situation': situation});
   }
 
   @override
@@ -229,34 +216,31 @@ class _ReportItemState extends State<ReportItem> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Radio<String>(
-                    value: 'Not yet treated',
+                    value: 'Option 1',
                     groupValue: _selectedValue,
                     onChanged: (String? value) {
                       setState(() {
                         _selectedValue = value;
-                        _updateSituation(value!);
                       });
                     },
                   ),
                   Text('Not yet treated'),
                   Radio<String>(
-                    value: 'In treatment',
+                    value: 'Option 2',
                     groupValue: _selectedValue,
                     onChanged: (String? value) {
                       setState(() {
                         _selectedValue = value;
-                        _updateSituation(value!);
                       });
                     },
                   ),
                   Text('In treatment'),
                   Radio<String>(
-                    value: 'Done',
+                    value: 'Option 3',
                     groupValue: _selectedValue,
                     onChanged: (String? value) {
                       setState(() {
                         _selectedValue = value;
-                        _updateSituation(value!);
                       });
                     },
                   ),
