@@ -55,7 +55,7 @@ class ThirdScreen extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 30.0,
                               fontWeight: FontWeight.w900,
-                              color: Color.fromARGB(255, 135, 86, 12),
+                              color: Color.fromARGB(255, 231, 137, 31),
                             ),
                           ),
                           const SizedBox(
@@ -120,7 +120,7 @@ class ThirdScreen extends StatelessWidget {
                             style: ElevatedButton.styleFrom(
                               minimumSize: Size(double.infinity, 50), // Set the minimum width
                             ),
-                            child: Text('Admin'),
+                            child: Text('Manager'),
                           ),
                         ],
                       ),

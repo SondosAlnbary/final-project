@@ -36,7 +36,7 @@ class _GardenState extends State<Garden> {
     }
   }
 
- Future<void> getUserName() async {
+  Future<void> getUserName() async {
     try {
       DocumentSnapshot userDoc = await _firestore.collection('user').doc(signedInUser.uid).get();
       if (userDoc.exists) {
@@ -48,10 +48,11 @@ class _GardenState extends State<Garden> {
       print(e);
     }
   }
-void _showSnackbar(BuildContext context, String message) {
+
+  void _showSnackbar(BuildContext context, String message) {
     final snackBar = SnackBar(
       content: Text(message),
-      duration: Duration(seconds: 3),
+      duration: Duration(seconds: 2),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
@@ -59,7 +60,16 @@ void _showSnackbar(BuildContext context, String message) {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: Text('Garden'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -111,9 +121,9 @@ void _showSnackbar(BuildContext context, String message) {
                               return 'Enter the address';
                             }
                             if (value.length < 2) {
-                              return "Username is too short.";
-                            } else if (value.length > 16) {
-                              return "Username is too long.";
+                              return "Address is too short.";
+                            } else if (value.length > 100) {
+                              return "Address is too long.";
                             } else {
                               return null;
                             }
@@ -137,7 +147,7 @@ void _showSnackbar(BuildContext context, String message) {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          keyboardType: TextInputType.emailAddress,
+                          keyboardType: TextInputType.streetAddress,
                           autocorrect: false,
                           textCapitalization: TextCapitalization.none,
                         ),
@@ -221,22 +231,28 @@ void _showSnackbar(BuildContext context, String message) {
               ),
             ),
             TextButton(
-                onPressed: () {
+              onPressed: () {
+                if (messageText1 != null && messageText != null) {
                   _firestore.collection('garden').add({
                     'sender': signedInUser.email,
                     'name': userName,
                     'address': messageText1,
                     'Report': messageText,
+                    'situation': 'Not treated yet', // Add default situation value
                   });
                   _showSnackbar(context, 'Report received');
-                },
-               child: Text('send',
-              style: TextStyle(
-                fontSize: 20,
-                color: Color.fromARGB(255, 255, 255, 255)
+                } else {
+                  _showSnackbar(context, 'Please fill in all fields');
+                }
+              },
+              child: Text(
+                'Send',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
               ),
-              )
-                )
+            ),
           ],
         ),
       ),

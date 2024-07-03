@@ -48,10 +48,11 @@ Future<void> getUserName() async {
       print(e);
     }
   }
+
 void _showSnackbar(BuildContext context, String message) {
     final snackBar = SnackBar(
       content: Text(message),
-      duration: Duration(seconds: 3),
+      duration: Duration(seconds: 2),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
@@ -59,8 +60,15 @@ void _showSnackbar(BuildContext context, String message) {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('Environmental Sanitation'),
+        title: Text('Environment'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -224,22 +232,27 @@ void _showSnackbar(BuildContext context, String message) {
             ),
             TextButton(
               onPressed: () {
-                _firestore.collection('environment').add({
-                  'sender':signedInUser.email,
-                  'name': userName,
-                  'address':messageText1,
-                  'Report': messageText,
-
-                });
-                _showSnackbar(context, 'Report received');
+                if (messageText1 != null && messageText != null) {
+                  _firestore.collection('environment').add({
+                    'sender': signedInUser.email,
+                    'name': userName,
+                    'address': messageText1,
+                    'Report': messageText,
+                    'situation': 'Not treated yet', // Add default situation value
+                  });
+                  _showSnackbar(context, 'Report received');
+                } else {
+                  _showSnackbar(context, 'Please fill in all fields');
+                }
               },
-              child: Text('send',
-              style: TextStyle(
-                fontSize: 20,
-                color: Color.fromARGB(255, 255, 255, 255)
+              child: Text(
+                'Send',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
               ),
-              )
-            )
+            ),
           ],
         ),
       ),

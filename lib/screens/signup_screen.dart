@@ -78,7 +78,7 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
                         style: TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.w900,
-                          color: Color.fromARGB(255, 42, 164, 31), 
+                          color: Color.fromARGB(255, 231, 137, 31), 
                          ),
                       ),
                   

@@ -56,11 +56,19 @@ void _showSnackbar(BuildContext context, String message) {
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text('Road maintenance'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -223,22 +231,28 @@ void _showSnackbar(BuildContext context, String message) {
               ),
             ),
             TextButton(
-                onPressed: () {
+              onPressed: () {
+                if (messageText1 != null && messageText != null) {
                   _firestore.collection('road').add({
                     'sender': signedInUser.email,
                     'name': userName,
                     'address': messageText1,
                     'Report': messageText,
+                    'situation': 'Not treated yet', // Add default situation value
                   });
                   _showSnackbar(context, 'Report received');
-                },
-               child: Text('send',
-              style: TextStyle(
-                fontSize: 20,
-                color: Color.fromARGB(255, 255, 255, 255)
-              ),
-              )
+                } else {
+                  _showSnackbar(context, 'Please fill in all fields');
+                }
+              },
+              child: Text(
+                'Send',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
                 ),
+              ),
+            ),
           ],
         ),
       ),

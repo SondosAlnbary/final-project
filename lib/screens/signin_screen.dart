@@ -58,7 +58,7 @@ class _SignInScreenState extends State<SingnInScreen> {
                         style: TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.w900,
-                          color: Color.fromARGB(255, 60, 103, 124),
+                          color: Color.fromARGB(255, 231, 137, 31),
                         ),
                       ),
                       const SizedBox(
