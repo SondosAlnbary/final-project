@@ -60,8 +60,15 @@ class _UtilitiesState extends State<Utilities> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text('Utilities'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -218,23 +225,28 @@ class _UtilitiesState extends State<Utilities> {
                           height: 20.0,
                         ),
                         TextButton(
-                          onPressed: () {
-                            _firestore.collection('Utilities').add({
-                              'sender': signedInUser.email,
-                              'name': userName,
-                              'address': messageText1,
-                              'Report': messageText,
-                            });
-                            _showSnackbar(context, 'Report received');
-                          },
-                          child: Text(
-                            'Send',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Color.fromARGB(255, 255, 255, 255),
-                            ),
-                          ),
-                        ),
+              onPressed: () {
+                if (messageText1 != null && messageText != null) {
+                  _firestore.collection('Utilities').add({
+                    'sender': signedInUser.email,
+                    'name': userName,
+                    'address': messageText1,
+                    'Report': messageText,
+                    'situation': 'Not treated yet', // Add default situation value
+                  });
+                  _showSnackbar(context, 'Report received');
+                } else {
+                  _showSnackbar(context, 'Please fill in all fields');
+                }
+              },
+              child: Text(
+                'Send',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
+              ),
+            ),
                         const SizedBox(
                           height: 20.0,
                         ),
