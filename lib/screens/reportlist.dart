@@ -37,90 +37,94 @@ class _ReportListScreenState extends State<ReportListScreen> {
           ),
         ],
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/noeye.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Scrollbar(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.all(8.0),
-                  padding: EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: DropdownButton(
-                    value: selectedCollection,
-                    onChanged: (String? newValue) async {
-                      bool exists = await doesCollectionExist(newValue!);
-                      setState(() {
-                        selectedCollection = exists ? newValue : 'Sanitation';
-                      });
-                    },
-                    items: collections.map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(
-                          value,
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-                StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection(selectedCollection)
-                      .where('sender', isNotEqualTo: '')
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    }
-
-                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                      return Center(
-                        child: Text(
-                          'No reports available.',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      );
-                    }
-
-                    final reports = snapshot.data!.docs.reversed.toList();
-
-                    return ListView.builder(
-                      shrinkWrap: true, // Added to ensure ListView works inside SingleChildScrollView
-                      physics: NeverScrollableScrollPhysics(), // Added to prevent ListView from scrolling independently
-                      itemCount: reports.length,
-                      itemBuilder: (context, index) {
-                        var report = reports[index];
-                        return ReportItem(
-                          report: report,
-                          selectedCollection: selectedCollection,
-                        );
-                      },
-                    );
-                  },
-                ),
-              ],
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/noeye.png'),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        ),
+          Scrollbar(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: DropdownButton(
+                      value: selectedCollection,
+                      onChanged: (String? newValue) async {
+                        bool exists = await doesCollectionExist(newValue!);
+                        setState(() {
+                          selectedCollection = exists ? newValue : 'Sanitation';
+                        });
+                      },
+                      items: collections.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection(selectedCollection)
+                        .where('sender', isNotEqualTo: '')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return Center(
+                          child: Text(
+                            'No reports available.',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        );
+                      }
+
+                      final reports = snapshot.data!.docs.reversed.toList();
+
+                      return ListView.builder(
+                        shrinkWrap: true, // Added to ensure ListView works inside SingleChildScrollView
+                        physics: NeverScrollableScrollPhysics(), // Added to prevent ListView from scrolling independently
+                        itemCount: reports.length,
+                        itemBuilder: (context, index) {
+                          var report = reports[index];
+                          return ReportItem(
+                            report: report,
+                            selectedCollection: selectedCollection,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -144,6 +148,25 @@ class ReportItem extends StatefulWidget {
 
 class _ReportItemState extends State<ReportItem> {
   String? _selectedValue;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedValue = widget.report['situation']; // Set the initial value from Firestore
+  }
+
+  void _updateSituation(String? value) async {
+    if (value != null) {
+      setState(() {
+        _selectedValue = value;
+      });
+
+      await FirebaseFirestore.instance
+          .collection(widget.selectedCollection)
+          .doc(widget.report.id)
+          .update({'situation': value});
+    }
+  }
 
   void _deleteReport() async {
     await FirebaseFirestore.instance
@@ -216,33 +239,21 @@ class _ReportItemState extends State<ReportItem> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Radio<String>(
-                    value: 'Option 1',
+                    value: 'Not yet treated',
                     groupValue: _selectedValue,
-                    onChanged: (String? value) {
-                      setState(() {
-                        _selectedValue = value;
-                      });
-                    },
+                    onChanged: _updateSituation,
                   ),
                   Text('Not yet treated'),
                   Radio<String>(
-                    value: 'Option 2',
+                    value: 'In treatment',
                     groupValue: _selectedValue,
-                    onChanged: (String? value) {
-                      setState(() {
-                        _selectedValue = value;
-                      });
-                    },
+                    onChanged: _updateSituation,
                   ),
                   Text('In treatment'),
                   Radio<String>(
-                    value: 'Option 3',
+                    value: 'Done',
                     groupValue: _selectedValue,
-                    onChanged: (String? value) {
-                      setState(() {
-                        _selectedValue = value;
-                      });
-                    },
+                    onChanged: _updateSituation,
                   ),
                   Text('Done'),
                 ],

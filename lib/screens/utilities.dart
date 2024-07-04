@@ -62,6 +62,8 @@ class _UtilitiesState extends State<Utilities> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         title: Text('Utilities'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -70,14 +72,17 @@ class _UtilitiesState extends State<Utilities> {
           },
         ),
       ),
-      body: Container(
+      body: Stack(
+        children: [
+          Container(
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/noeye.png'),
             fit: BoxFit.cover,
           ),
         ),
-        child: Column(
+          ),
+         Column(
           children: [
             const Expanded(
               flex: 1,
@@ -250,27 +255,27 @@ class _UtilitiesState extends State<Utilities> {
                         const SizedBox(
                           height: 20.0,
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            _firestore.collection('Emergency').add({
-                              'sender': signedInUser.email,
-                              'name': userName,
-                              'address': 'Emergency Address', // or use predefined value
-                              'Report': 'Emergency Report',
-                            });
-                            _showSnackbar(context, 'Emergency report sent');
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                          ),
-                          child: Text(
-                            'Emergency',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
+                        // ElevatedButton(
+                        //   onPressed: () {
+                        //     _firestore.collection('Emergency').add({
+                        //       'sender': signedInUser.email,
+                        //       'name': userName,
+                        //       'address': 'Emergency Address', // or use predefined value
+                        //       'Report': 'Emergency Report',
+                        //     });
+                        //     _showSnackbar(context, 'Emergency report sent');
+                        //   },
+                        //   style: ElevatedButton.styleFrom(
+                        //     backgroundColor: Colors.red,
+                        //   ),
+                        //   child: Text(
+                        //     'Emergency',
+                        //     style: TextStyle(
+                        //       fontSize: 20,
+                        //       color: Colors.white,
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
@@ -279,6 +284,7 @@ class _UtilitiesState extends State<Utilities> {
             ),
           ],
         ),
+        ],
       ),
     );
   }

@@ -200,7 +200,7 @@ class CategoryListScreen extends StatelessWidget {
           case 'Environment':
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => enviroment()),
+              MaterialPageRoute(builder: (context) => environment()),
             );
             break;
           case 'Safety':

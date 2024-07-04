@@ -62,6 +62,8 @@ void _showSnackbar(BuildContext context, String message) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         title: Text('Safety'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -70,14 +72,17 @@ void _showSnackbar(BuildContext context, String message) {
           },
         ),
       ),
-      body: Container(
+      body:Stack(
+      children: [
+       Container(
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/noeye.png'),
             fit: BoxFit.cover,
           ),
         ),
-        child: Column(
+       ),
+        Column(
           children: [
             const Expanded(
               flex: 1,
@@ -255,6 +260,7 @@ void _showSnackbar(BuildContext context, String message) {
             ),
           ],
         ),
+      ],
       ),
     );
   }
