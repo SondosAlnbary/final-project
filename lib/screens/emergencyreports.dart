@@ -1,21 +1,15 @@
-import 'package:final_project/screens/emergencyreports.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'welcome_screen.dart';
 
-class ReportListScreen extends StatefulWidget {
+class Emergency extends StatefulWidget {
   @override
-  _ReportListScreenState createState() => _ReportListScreenState();
+  _EmergencyState createState() => _EmergencyState();
 }
 
-class _ReportListScreenState extends State<ReportListScreen> {
-  List<String> collections = [
-    'Sanitation', 'environment', 'garden', 'road', 'lighting', 'safety', 'Utilities', 'transportation'
-  ]; // Add your collection names here
-
-  String selectedCollection = 'Sanitation'; // Initial collection
+class _EmergencyState extends State<Emergency> {
+  String selectedCollection = 'Utilities';
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +17,16 @@ class _ReportListScreenState extends State<ReportListScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          'Report List',
+          'Emergency Report List',
           style: TextStyle(fontSize: 24),
         ),
         actions: [
+          IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
@@ -35,18 +35,6 @@ class _ReportListScreenState extends State<ReportListScreen> {
                 MaterialPageRoute(builder: (context) => WelcomeScreen()),
               );
             },
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Emergency()),
-              );
-            },
-            child: Text(
-              'Emergency Reports',
-              style: TextStyle(color: Color.fromARGB(255, 255, 0, 0)),
-            ),
           ),
         ],
       ),
@@ -79,29 +67,11 @@ class _ReportListScreenState extends State<ReportListScreen> {
                         ),
                       ],
                     ),
-                    child: DropdownButton(
-                      value: selectedCollection,
-                      onChanged: (String? newValue) async {
-                        bool exists = await doesCollectionExist(newValue!);
-                        setState(() {
-                          selectedCollection = exists ? newValue : 'Sanitation';
-                        });
-                      },
-                      items: collections.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        );
-                      }).toList(),
-                    ),
                   ),
                   StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection(selectedCollection)
-                        .where('sender', isNotEqualTo: '')
+                        .where('Emergency', isEqualTo: 'yes')
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -111,7 +81,7 @@ class _ReportListScreenState extends State<ReportListScreen> {
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                         return Center(
                           child: Text(
-                            'No reports available.',
+                            'No emergency reports available.',
                             style: TextStyle(fontSize: 18),
                           ),
                         );
@@ -120,8 +90,8 @@ class _ReportListScreenState extends State<ReportListScreen> {
                       final reports = snapshot.data!.docs.reversed.toList();
 
                       return ListView.builder(
-                        shrinkWrap: true, // Added to ensure ListView works inside SingleChildScrollView
-                        physics: NeverScrollableScrollPhysics(), // Added to prevent ListView from scrolling independently
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
                         itemCount: reports.length,
                         itemBuilder: (context, index) {
                           var report = reports[index];
@@ -165,7 +135,7 @@ class _ReportItemState extends State<ReportItem> {
   @override
   void initState() {
     super.initState();
-    _selectedValue = widget.report['situation']; // Set the initial value from Firestore
+    _selectedValue = widget.report['situation'];
   }
 
   void _updateSituation(String? value) async {
@@ -279,5 +249,3 @@ class _ReportItemState extends State<ReportItem> {
     );
   }
 }
-
-
