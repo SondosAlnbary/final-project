@@ -92,9 +92,23 @@ class _AccountState extends State<AccountScreen> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    'Hello ${username ?? 'Loading...'}', // Greeting with the username
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 40,
+                        backgroundColor: Colors.grey.shade200,
+                        child: Icon(
+                          Icons.account_circle,
+                          size: 60,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        'Hello ${username ?? 'Loading...'}', // Greeting with the username
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
