@@ -3,9 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/screens/signin_screen.dart';
 import 'package:final_project/widgets/custom_scaffold.dart';
- import 'package:final_project/screens/category_screen.dart';
-
-
+import 'package:final_project/screens/category_screen.dart';
 
 final _firebase = FirebaseAuth.instance;
 
@@ -19,21 +17,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _formSignupKey = GlobalKey<FormState>();
   bool agreePersonalData = true;
 
- //Add controllers for email, full name, and password
-   TextEditingController _emailController = TextEditingController();
-   TextEditingController _fullNameController = TextEditingController();
-   TextEditingController _passwordController = TextEditingController();
+  //Add controllers for email, full name, and password
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _fullNameController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
-var _enteredFullName='';
-var _enteredEmail='';
-var _enteredPassword='';
-var _isEmailTaken = false; // Variable to track if the email is already taken
+  var _enteredFullName = '';
+  var _enteredEmail = '';
+  var _enteredPassword = '';
+  var _isEmailTaken = false; // Variable to track if the email is already taken
 
-    RegExp regex =
-        RegExp('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~])');
-      
+  RegExp regex =
+      RegExp('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~])');
 
-    // Function to show a SnackBar with a given message
+  // Function to show a SnackBar with a given message
   void showSnackBar(String message) {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -42,7 +39,7 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
       ),
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -78,10 +75,10 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
                         style: TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.w900,
-                          color: Color.fromARGB(255, 231, 137, 31), 
-                         ),
+                          color: Color.fromARGB(255, 231, 137, 31),
+                        ),
                       ),
-                  
+
                       const SizedBox(
                         height: 40.0,
                       ),
@@ -92,17 +89,16 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
                           if (value == null || value.isEmpty) {
                             return 'Please enter Full name';
                           }
-                          if(value.length < 2)
-                          {return "Username is too short.";}
-                          else if (value.length > 16) {
-                          return "Username is too long.";
-                         } else {
-        
-                          return null;
-                        }
+                          if (value.length < 2) {
+                            return "Username is too short.";
+                          } else if (value.length > 16) {
+                            return "Username is too long.";
+                          } else {
+                            return null;
+                          }
                         },
-                        onSaved: (value){
-                          _enteredFullName=value!;
+                        onSaved: (value) {
+                          _enteredFullName = value!;
                         },
                         decoration: InputDecoration(
                           label: const Text('Full Name'),
@@ -122,19 +118,15 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
-                         
-                
                         ),
-                        keyboardType:TextInputType.emailAddress,
+                        keyboardType: TextInputType.emailAddress,
                         autocorrect: false,
                         textCapitalization: TextCapitalization.none,
-                        
                       ),
                       const SizedBox(
                         height: 25.0,
                       ),
 
-                      
                       // email
                       TextFormField(
                         controller: _emailController,
@@ -142,30 +134,26 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
                           if (value == null || value.isEmpty) {
                             return 'Please enter Email';
                           }
-                          if( _isEmailTaken){
-                            return  "This email is already in use";
+                          if (_isEmailTaken) {
+                            return "This email is already in use";
                           }
-                          if(value.length < 2)
-                          {return "Username is too short.";}
-                          else if (value.length > 60) {
-                          return "Username is too long.";
-                         } else {
-        
-                          return null;
-                        }
+                          if (value.length < 2) {
+                            return "Username is too short.";
+                          } else if (value.length > 60) {
+                            return "Username is too long.";
+                          } else {
+                            return null;
+                          }
                         },
-                        
-                        onSaved: (value){
-                          _enteredEmail=value!;
+                        onSaved: (value) {
+                          _enteredEmail = value!;
                         },
                         decoration: InputDecoration(
                           label: const Text('Email'),
                           hintText: 'Enter Email',
-
                           hintStyle: const TextStyle(
                             color: Colors.black26,
                           ),
-                          
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
                               color: Colors.black12, // Default border color
@@ -174,11 +162,10 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, 
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          
                         ),
                       ),
                       const SizedBox(
@@ -186,7 +173,9 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
                       ),
                       // Display message if email is already taken
                       Text(
-                        _isEmailTaken ? 'This email is already in use. Please use another email.' : '',
+                        _isEmailTaken
+                            ? 'This email is already in use. Please use another email.'
+                            : '',
                         style: TextStyle(
                           color: Colors.red, // Change the color as needed
                         ),
@@ -195,9 +184,9 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
                       const SizedBox(
                         height: 5.0,
                       ),
-                      
+
                       // password
- /////////////////////////////////////////////////////////////////////////////////                     
+                      /////////////////////////////////////////////////////////////////////////////////
                       TextFormField(
                         controller: _passwordController,
                         obscureText: true,
@@ -207,20 +196,18 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
                             return 'Please enter Password';
                           }
                           if (!regex.hasMatch(value)) {
-                          return 'Enter a valid password include sympols letters';
-                         }
-                          if(value.length < 2)
-                          {return "Username is too short.";}
-                          else if (value.length > 12) {
-                          return "Username is too long.";
-                          
-                         } else {
-        
-                          return null;
-                        }
+                            return 'Enter a valid password include sympols letters';
+                          }
+                          if (value.length < 2) {
+                            return "Username is too short.";
+                          } else if (value.length > 12) {
+                            return "Username is too long.";
+                          } else {
+                            return null;
+                          }
                         },
-                        onSaved: (value){
-                          _enteredPassword=value!;
+                        onSaved: (value) {
+                          _enteredPassword = value!;
                         },
                         decoration: InputDecoration(
                           label: const Text('Password'),
@@ -241,7 +228,6 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        
                       ),
                       const SizedBox(
                         height: 25.0,
@@ -256,7 +242,7 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
                                 agreePersonalData = value!;
                               });
                             },
-                           activeColor: Color.fromARGB(255, 60, 103, 124),
+                            activeColor: Color.fromARGB(255, 60, 103, 124),
                           ),
                           const Text(
                             'I agree to the processing of ',
@@ -281,23 +267,20 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () async {
-                           
                             if (_formSignupKey.currentState!.validate() &&
                                 agreePersonalData) {
-                                String fullName = _fullNameController.text;
-                                String email = _emailController.text;
-                                 String password = _passwordController.text;
+                              String fullName = _fullNameController.text;
+                              String email = _emailController.text;
+                              String password = _passwordController.text;
 
-                          //       if (await isEmailTaken(email)) {
-                          //         setState(() {
-                          //         _isEmailTaken = true;
-                          //                           });
-                          // showSnackBar('This email is already in use. Please use another email.');}
+                              //       if (await isEmailTaken(email)) {
+                              //         setState(() {
+                              //         _isEmailTaken = true;
+                              //                           });
+                              // showSnackBar('This email is already in use. Please use another email.');}
 
-                                await registerUser(fullName,email,password);
-                                 
-                                
-                       
+                              await registerUser(fullName, email, password);
+
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Processing Data'),
@@ -309,13 +292,11 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
                                     content: Text(
                                         'Please agree to the processing of personal data')),
                               );
-                            } 
+                            }
                           },
-                          
                           child: const Text('Sign up'),
                         ),
                       ),
-                      
 
                       const SizedBox(
                         height: 30.0,
@@ -335,16 +316,14 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
                               vertical: 0,
                               horizontal: 10,
                             ),
-                            
                           ),
-                          
                         ],
                       ),
                       const SizedBox(
                         height: 30.0,
                       ),
                       // sign up social media logo
-                      
+
                       const SizedBox(
                         height: 25.0,
                       ),
@@ -367,7 +346,6 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
                                 ),
                               );
                             },
-                            
                             child: Text(
                               'Sign in',
                               style: TextStyle(
@@ -381,9 +359,6 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
                       const SizedBox(
                         height: 20.0,
                       ),
-                    
-                    
-
                     ],
                   ),
                 ),
@@ -398,34 +373,37 @@ var _isEmailTaken = false; // Variable to track if the email is already taken
 // Function to check if the email is already taken
   Future<bool> isEmailTaken(String email) async {
     final usersCollection = FirebaseFirestore.instance.collection('user');
-    QuerySnapshot querySnapshot = await usersCollection.where('email', isEqualTo: email).get();
-  print(querySnapshot);
+    QuerySnapshot querySnapshot =
+        await usersCollection.where('email', isEqualTo: email).get();
+    print(querySnapshot);
     return true;
   }
 
+  Future<void> registerUser(
+      String fullName, String email, String password) async {
+    try {
+      // Create user in Firebase Authentication
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-  Future<void> registerUser(String fullName, String email, String password) async {
-  try {
-    // Create user in Firebase Authentication
-    UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+      // Save user data to Firestore
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(userCredential.user!.uid)
+          .set({
+        'name': fullName,
+        'email': email,
+        'password': password,
 
-    
+        // Add other user-related data as needed
+      });
 
-    // Save user data to Firestore
-    await FirebaseFirestore.instance.collection('user').doc(userCredential.user!.uid).set({
-      'name': fullName,
-      'email': email,
-      'password':password,
-
-      // Add other user-related data as needed
-    });
-
-    print('User registered successfully!');
-  } catch (e) {
-    print('Error registering user: $e');
+      print('User registered successfully!');
+    } catch (e) {
+      print('Error registering user: $e');
+    }
   }
-}
 }

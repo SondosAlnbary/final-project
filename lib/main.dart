@@ -2,22 +2,21 @@ import 'package:final_project/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+// ignore: unused_import
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-await Firebase.initializeApp(
+
+  await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-);
+  );
 
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-const MyApp({super.key});
-
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +24,9 @@ const MyApp({super.key});
       debugShowCheckedModeBanner: false,
       title: 'Flutter demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true
-      ),
-      home:const WelcomeScreen(),
-       
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true),
+      home: const WelcomeScreen(),
     );
   }
 }
