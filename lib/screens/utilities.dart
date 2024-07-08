@@ -17,6 +17,8 @@ class _UtilitiesState extends State<Utilities> {
   String? messageText;
   String? messageText1;
 
+  final _formKey = GlobalKey<FormState>();  // Added Global Key
+
   @override
   void initState() {
     super.initState();
@@ -58,6 +60,12 @@ class _UtilitiesState extends State<Utilities> {
   }
 
   Future<void> _sendReport({required bool isEmergency}) async {
+    if (!_formKey.currentState!.validate()) {
+      // If the form is not valid, display a message and return.
+      _showSnackbar(context, 'Please fill out all fields.');
+      return;
+    }
+
     try {
       DocumentReference docRef = await _firestore.collection('Utilities').add({
         'sender': signedInUser.email,
@@ -126,6 +134,7 @@ class _UtilitiesState extends State<Utilities> {
                   ),
                   child: SingleChildScrollView(
                     child: Form(
+                      key: _formKey,  // Added Global Key
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -146,7 +155,7 @@ class _UtilitiesState extends State<Utilities> {
                             },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Enter the address';
+                                return 'Please enter the address';
                               }
                               if (value.length < 2) {
                                 return "Address is too short.";
