@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -105,7 +106,6 @@ class _transportationState extends State<transportation> {
                   ),
                   child: SingleChildScrollView(
                     child: Form(
-                      key: _formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -129,9 +129,9 @@ class _transportationState extends State<transportation> {
                                 return 'Enter the address';
                               }
                               if (value.length < 2) {
-                                return "Address is too short.";
-                              } else if (value.length > 100) {
-                                return "Address is too long.";
+                                return "Username is too short.";
+                              } else if (value.length > 16) {
+                                return "Username is too long.";
                               } else {
                                 return null;
                               }
@@ -155,7 +155,7 @@ class _transportationState extends State<transportation> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            keyboardType: TextInputType.streetAddress,
+                            keyboardType: TextInputType.emailAddress,
                             autocorrect: false,
                             textCapitalization: TextCapitalization.none,
                           ),

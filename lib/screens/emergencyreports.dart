@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import, use_key_in_widget_constructors, library_private_types_in_public_api, prefer_const_constructors_in_immutables
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,23 +18,23 @@ class _EmergencyState extends State<Emergency> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
+        title: const Text(
           'Emergency Report List',
           style: TextStyle(fontSize: 24),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                MaterialPageRoute(builder: (context) => const WelcomeScreen()),
               );
             },
           ),
@@ -41,7 +43,7 @@ class _EmergencyState extends State<Emergency> {
       body: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/noeye.png'),
                 fit: BoxFit.cover,
@@ -53,8 +55,8 @@ class _EmergencyState extends State<Emergency> {
               child: Column(
                 children: [
                   Container(
-                    margin: EdgeInsets.all(8.0),
-                    padding: EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8.0),
@@ -63,7 +65,7 @@ class _EmergencyState extends State<Emergency> {
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 2,
                           blurRadius: 5,
-                          offset: Offset(0, 3),
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
@@ -75,11 +77,11 @@ class _EmergencyState extends State<Emergency> {
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
+                        return const Center(child: CircularProgressIndicator());
                       }
 
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return Center(
+                        return const Center(
                           child: Text(
                             'No emergency reports available.',
                             style: TextStyle(fontSize: 18),
@@ -91,7 +93,7 @@ class _EmergencyState extends State<Emergency> {
 
                       return ListView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: reports.length,
                         itemBuilder: (context, index) {
                           var report = reports[index];
@@ -171,7 +173,7 @@ class _ReportItemState extends State<ReportItem> {
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -182,18 +184,19 @@ class _ReportItemState extends State<ReportItem> {
               ListTile(
                 title: Text(
                   widget.report['sender'],
-                  style: TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16),
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       widget.report['address'],
-                      style: TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 16),
                     ),
                     Text(
                       widget.selectedCollection,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                   ],
                 ),
@@ -201,16 +204,16 @@ class _ReportItemState extends State<ReportItem> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 150),
+                      constraints: const BoxConstraints(maxWidth: 150),
                       child: Text(
                         widget.report['Report'],
-                        style: TextStyle(fontSize: 14),
+                        style: const TextStyle(fontSize: 14),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
+                      icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () {
                         _deleteReport();
                       },
@@ -226,22 +229,22 @@ class _ReportItemState extends State<ReportItem> {
                     groupValue: _selectedValue,
                     onChanged: _updateSituation,
                   ),
-                  Text('Not yet treated'),
+                  const Text('Not yet treated'),
                   Radio<String>(
                     value: 'In treatment',
                     groupValue: _selectedValue,
                     onChanged: _updateSituation,
                   ),
-                  Text('In treatment'),
+                  const Text('In treatment'),
                   Radio<String>(
                     value: 'Done',
                     groupValue: _selectedValue,
                     onChanged: _updateSituation,
                   ),
-                  Text('Done'),
+                  const Text('Done'),
                 ],
               ),
-              Divider(),
+              const Divider(),
             ],
           ),
         ),

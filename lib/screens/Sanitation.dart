@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, library_private_types_in_public_api, avoid_print, prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -74,13 +76,21 @@ class _SanitationState extends State<Sanitation> {
           },
         ),
       ),
-      body: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/noeye.png'),
-                fit: BoxFit.cover,
+      body: Stack(children: [
+        Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/noeye.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Column(
+          children: [
+            const Expanded(
+              flex: 1,
+              child: SizedBox(
+                height: 10,
               ),
             ),
           ),
@@ -261,10 +271,34 @@ class _SanitationState extends State<Sanitation> {
                   ),
                 ),
               ),
-            ],
-          ),
-        ],
-      ),
+            ),
+            TextButton(
+              onPressed: () {
+                if (messageText1 != null && messageText != null) {
+                  _firestore.collection('Sanitation').add({
+                    'sender': signedInUser.email,
+                    'name': userName,
+                    'address': messageText1,
+                    'Report': messageText,
+                    'situation':
+                        'Not treated yet', // Add default situation value
+                  });
+                  _showSnackbar(context, 'Report received');
+                } else {
+                  _showSnackbar(context, 'Please fill in all fields');
+                }
+              },
+              child: Text(
+                'Send',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ]),
     );
   }
 }

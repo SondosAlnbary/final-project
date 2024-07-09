@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -39,7 +40,8 @@ class _GardenState extends State<Garden> {
 
   Future<void> getUserName() async {
     try {
-      DocumentSnapshot userDoc = await _firestore.collection('user').doc(signedInUser.uid).get();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('user').doc(signedInUser.uid).get();
       if (userDoc.exists) {
         setState(() {
           userName = userDoc['name'];
@@ -257,6 +259,30 @@ class _GardenState extends State<Garden> {
                         ],
                       ),
                     ),
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (messageText1 != null && messageText != null) {
+                    _firestore.collection('garden').add({
+                      'sender': signedInUser.email,
+                      'name': userName,
+                      'address': messageText1,
+                      'Report': messageText,
+                      'situation':
+                          'Not treated yet', // Add default situation value
+                    });
+                    _showSnackbar(context, 'Report received');
+                  } else {
+                    _showSnackbar(context, 'Please fill in all fields');
+                  }
+                },
+                child: Text(
+                  'Send',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
                   ),
                 ),
               ),

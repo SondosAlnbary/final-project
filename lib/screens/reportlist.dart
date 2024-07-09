@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import, use_key_in_widget_constructors, library_private_types_in_public_api, prefer_const_constructors, prefer_const_constructors_in_immutables
+
 import 'package:final_project/screens/emergencyreports.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,7 +14,14 @@ class ReportListScreen extends StatefulWidget {
 
 class _ReportListScreenState extends State<ReportListScreen> {
   List<String> collections = [
-    'Sanitation', 'environment', 'garden', 'road', 'lighting', 'safety', 'Utilities', 'transportation'
+    'Sanitation',
+    'environment',
+    'garden',
+    'road',
+    'lighting',
+    'safety',
+    'Utilities',
+    'transportation'
   ]; // Add your collection names here
 
   String selectedCollection = 'Sanitation'; // Initial collection
@@ -87,7 +96,8 @@ class _ReportListScreenState extends State<ReportListScreen> {
                           selectedCollection = exists ? newValue : 'Sanitation';
                         });
                       },
-                      items: collections.map<DropdownMenuItem<String>>((String value) {
+                      items: collections
+                          .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(
@@ -120,8 +130,10 @@ class _ReportListScreenState extends State<ReportListScreen> {
                       final reports = snapshot.data!.docs.reversed.toList();
 
                       return ListView.builder(
-                        shrinkWrap: true, // Added to ensure ListView works inside SingleChildScrollView
-                        physics: NeverScrollableScrollPhysics(), // Added to prevent ListView from scrolling independently
+                        shrinkWrap:
+                            true, // Added to ensure ListView works inside SingleChildScrollView
+                        physics:
+                            NeverScrollableScrollPhysics(), // Added to prevent ListView from scrolling independently
                         itemCount: reports.length,
                         itemBuilder: (context, index) {
                           var report = reports[index];
@@ -165,7 +177,8 @@ class _ReportItemState extends State<ReportItem> {
   @override
   void initState() {
     super.initState();
-    _selectedValue = widget.report['situation']; // Set the initial value from Firestore
+    _selectedValue =
+        widget.report['situation']; // Set the initial value from Firestore
   }
 
   void _updateSituation(String? value) async {
@@ -223,7 +236,8 @@ class _ReportItemState extends State<ReportItem> {
                     ),
                     Text(
                       widget.selectedCollection,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                   ],
                 ),
@@ -279,5 +293,3 @@ class _ReportItemState extends State<ReportItem> {
     );
   }
 }
-
-

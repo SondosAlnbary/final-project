@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import, prefer_const_constructors, use_build_context_synchronously, avoid_print
+
 import 'package:final_project/widgets/welcome_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,7 +8,7 @@ import 'package:final_project/screens/signup_screen.dart';
 import 'package:final_project/widgets/custom_scaffold.dart';
 import 'package:final_project/screens/category_screen.dart';
 import 'package:final_project/screens/second_screen.dart';
-// import 'package:email_validator/email_validator.dart'; 
+// import 'package:email_validator/email_validator.dart';
 
 class SingnInScreen extends StatefulWidget {
   const SingnInScreen({Key? key}) : super(key: key);
@@ -51,7 +53,8 @@ class _SignInScreenState extends State<SingnInScreen> {
                     children: [
                       AppBar(
                         backgroundColor: Colors.transparent,
-                        automaticallyImplyLeading: false, // Set this property to false to remove the back arrow
+                        automaticallyImplyLeading:
+                            false, // Set this property to false to remove the back arrow
                       ),
                       Text(
                         'Welcome back',
@@ -70,9 +73,9 @@ class _SignInScreenState extends State<SingnInScreen> {
                           if (value == null || value.isEmpty) {
                             return 'Please Enter Email ';
                           }
-                  //          else if (!EmailValidator.validate(value)) {
-                  //          return 'Invalid Email Address';
-                  // }
+                          //          else if (!EmailValidator.validate(value)) {
+                          //          return 'Invalid Email Address';
+                          // }
                           return null;
                         },
                         decoration: InputDecoration(
@@ -173,7 +176,7 @@ class _SignInScreenState extends State<SingnInScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () async { 
+                          onPressed: () async {
                             if (_formSignInKey.currentState!.validate() &&
                                 rememberPassword) {
                               try {
@@ -190,7 +193,7 @@ class _SignInScreenState extends State<SingnInScreen> {
                                     builder: (context) => CategoryScreen(),
                                   ),
                                 );
-              
+
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text('Login Successful'),

@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field, file_names, prefer_final_fields, unused_element, avoid_print, prefer_const_constructors, use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,64 +15,66 @@ class AdminSignUp extends StatefulWidget {
   @override
   State<AdminSignUp> createState() => _SignUpScreenState();
 }
+
 class _SignUpScreenState extends State<AdminSignUp> {
   final _formSignupKey = GlobalKey<FormState>();
   bool agreePersonalData = true;
 
- //Add controllers for email, full name, and password
-   TextEditingController _emailController = TextEditingController();
-   TextEditingController _fullNameController = TextEditingController();
-   TextEditingController _passwordController = TextEditingController();
+  //Add controllers for email, full name, and password
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _fullNameController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
-var _enteredFullName='';
-var _enteredEmail='';
-var _enteredPassword='';
-var _isEmailTaken = false; // Variable to track if the email is already taken
+  var _enteredFullName = '';
+  var _enteredEmail = '';
+  var _enteredPassword = '';
+  var _isEmailTaken = false; // Variable to track if the email is already taken
 
-    RegExp regex =
-        RegExp('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~])');
+  RegExp regex =
+      RegExp('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~])');
 
-Future<void> _submit() async{
-  final isValid= _formSignupKey.currentState!.validate();
+  Future<void> _submit() async {
+    final isValid = _formSignupKey.currentState!.validate();
 
-if(!isValid){
-  return;
-  }
-  _formSignupKey.currentState!.save();
+    if (!isValid) {
+      return;
+    }
+    _formSignupKey.currentState!.save();
 
-  if(agreePersonalData){
-//log users in 
-}else{
-  try{
-     // Check if the email already exists
+    if (agreePersonalData) {
+//log users in
+    } else {
+      try {
+        // Check if the email already exists
         if (await isEmailTaken(_enteredEmail)) {
-           setState(() {
+          setState(() {
             _isEmailTaken = true;
           });
-          showSnackBar('This email is already in use. Please use another email.');
-          
+          showSnackBar(
+              'This email is already in use. Please use another email.');
         } else {
-    final userCredentials =await _firebase.createUserWithEmailAndPassword(
-    email: _enteredEmail,
-     password: _enteredPassword
-     );
-    print(userCredentials);
+          final userCredentials =
+              await _firebase.createUserWithEmailAndPassword(
+                  email: _enteredEmail, password: _enteredPassword);
+          print(userCredentials);
         }
-  }on FirebaseAuthException catch (error){
-    if(error.code == 'email-already-in-use'){
-      setState(() {
+      } on FirebaseAuthException catch (error) {
+        if (error.code == 'email-already-in-use') {
+          setState(() {
             _isEmailTaken = true;
           });
-    // Handle email already in use error
-        showSnackBar('This email is already in use. Please use another email.');
+          // Handle email already in use error
+          showSnackBar(
+              'This email is already in use. Please use another email.');
         } else {
           // Handle other authentication errors
           showSnackBar(error.message ?? 'Authentication failed!');
+        }
+      }
     }
   }
-}
-}
-    // Function to show a SnackBar with a given message
+
+  // Function to show a SnackBar with a given message
   void showSnackBar(String message) {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -79,7 +83,7 @@ if(!isValid){
       ),
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -116,9 +120,9 @@ if(!isValid){
                           fontSize: 30.0,
                           fontWeight: FontWeight.w900,
                           color: Color.fromARGB(255, 231, 137, 31),
-                         ),
+                        ),
                       ),
-                  
+
                       const SizedBox(
                         height: 40.0,
                       ),
@@ -129,17 +133,16 @@ if(!isValid){
                           if (value == null || value.isEmpty) {
                             return 'Please enter Full name';
                           }
-                          if(value.length < 2)
-                          {return "Username is too short.";}
-                          else if (value.length > 16) {
-                          return "Username is too long.";
-                         } else {
-        
-                          return null;
-                        }
+                          if (value.length < 2) {
+                            return "Username is too short.";
+                          } else if (value.length > 16) {
+                            return "Username is too long.";
+                          } else {
+                            return null;
+                          }
                         },
-                        onSaved: (value){
-                          _enteredFullName=value!;
+                        onSaved: (value) {
+                          _enteredFullName = value!;
                         },
                         decoration: InputDecoration(
                           label: const Text('Full Name'),
@@ -160,10 +163,9 @@ if(!isValid){
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        keyboardType:TextInputType.emailAddress,
+                        keyboardType: TextInputType.emailAddress,
                         autocorrect: false,
                         textCapitalization: TextCapitalization.none,
-                        
                       ),
                       const SizedBox(
                         height: 25.0,
@@ -175,27 +177,23 @@ if(!isValid){
                           if (value == null || value.isEmpty) {
                             return 'Please enter Email';
                           }
-                          if(value.length < 2)
-                          {return "Username is too short.";}
-                          else if (value.length > 60) {
-                          return "Username is too long.";
-                         } else {
-        
-                          return null;
-                        }
+                          if (value.length < 2) {
+                            return "Username is too short.";
+                          } else if (value.length > 60) {
+                            return "Username is too long.";
+                          } else {
+                            return null;
+                          }
                         },
-                        
-                        onSaved: (value){
-                          _enteredEmail=value!;
+                        onSaved: (value) {
+                          _enteredEmail = value!;
                         },
                         decoration: InputDecoration(
                           label: const Text('Email'),
                           hintText: 'Enter Email',
-
                           hintStyle: const TextStyle(
                             color: Colors.black26,
                           ),
-                          
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
                               color: Colors.black12, // Default border color
@@ -204,7 +202,7 @@ if(!isValid){
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, 
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -215,7 +213,9 @@ if(!isValid){
                       ),
                       // Display message if email is already taken
                       Text(
-                        _isEmailTaken ? 'This email is already in use. Please use another email.' : '',
+                        _isEmailTaken
+                            ? 'This email is already in use. Please use another email.'
+                            : '',
                         style: TextStyle(
                           color: Colors.red, // Change the color as needed
                         ),
@@ -224,9 +224,9 @@ if(!isValid){
                       const SizedBox(
                         height: 5.0,
                       ),
-                      
+
                       // password
- /////////////////////////////////////////////////////////////////////////////////                     
+                      /////////////////////////////////////////////////////////////////////////////////
                       TextFormField(
                         controller: _passwordController,
                         obscureText: true,
@@ -235,21 +235,19 @@ if(!isValid){
                           if (value == null || value.isEmpty) {
                             return 'Please enter Password';
                           }
-                         if (!regex.hasMatch(value)) {
-                          return 'Enter a valid password include sympols letters';
-                         }
-                          if(value.length < 2)
-                          {return "Username is too short.";}
-                          else if (value.length > 12) {
-                          return "Username is too long.";
-                          
-                         } else {
-        
-                          return null;
-                        }
+                          if (!regex.hasMatch(value)) {
+                            return 'Enter a valid password include sympols letters';
+                          }
+                          if (value.length < 2) {
+                            return "Username is too short.";
+                          } else if (value.length > 12) {
+                            return "Username is too long.";
+                          } else {
+                            return null;
+                          }
                         },
-                        onSaved: (value){
-                          _enteredPassword=value!;
+                        onSaved: (value) {
+                          _enteredPassword = value!;
                         },
                         decoration: InputDecoration(
                           label: const Text('Password'),
@@ -270,7 +268,6 @@ if(!isValid){
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        
                       ),
                       const SizedBox(
                         height: 25.0,
@@ -285,7 +282,7 @@ if(!isValid){
                                 agreePersonalData = value!;
                               });
                             },
-                           activeColor: Color.fromARGB(255, 60, 103, 124),
+                            activeColor: Color.fromARGB(255, 60, 103, 124),
                           ),
                           const Text(
                             'I agree to the processing of ',
@@ -310,14 +307,13 @@ if(!isValid){
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () async {
-                           
                             if (_formSignupKey.currentState!.validate() &&
                                 agreePersonalData) {
-                                String fullName = _fullNameController.text;
-                                String email = _emailController.text;
-                                 String password = _passwordController.text;
-                                await registerUser(fullName,email,password);
-                       
+                              String fullName = _fullNameController.text;
+                              String email = _emailController.text;
+                              String password = _passwordController.text;
+                              await registerUser(fullName, email, password);
+
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Processing Data'),
@@ -329,13 +325,11 @@ if(!isValid){
                                     content: Text(
                                         'Please agree to the processing of personal data')),
                               );
-                            } 
+                            }
                           },
-                          
                           child: const Text('Sign up'),
                         ),
                       ),
-                     
 
                       const SizedBox(
                         height: 30.0,
@@ -355,16 +349,14 @@ if(!isValid){
                               vertical: 0,
                               horizontal: 10,
                             ),
-                            
                           ),
-                          
                         ],
                       ),
                       const SizedBox(
                         height: 30.0,
                       ),
                       // sign up social media logo
-                      
+
                       const SizedBox(
                         height: 25.0,
                       ),
@@ -387,7 +379,6 @@ if(!isValid){
                                 ),
                               );
                             },
-                            
                             child: Text(
                               'Sign in',
                               style: TextStyle(
@@ -401,9 +392,6 @@ if(!isValid){
                       const SizedBox(
                         height: 20.0,
                       ),
-                    
-                    
-
                     ],
                   ),
                 ),
@@ -418,32 +406,37 @@ if(!isValid){
 // Function to check if the email is already taken
   Future<bool> isEmailTaken(String email) async {
     final usersCollection = FirebaseFirestore.instance.collection('Adminuser');
-    QuerySnapshot querySnapshot = await usersCollection.where('email', isEqualTo: email).get();
+    QuerySnapshot querySnapshot =
+        await usersCollection.where('email', isEqualTo: email).get();
 
     return querySnapshot.docs.isNotEmpty;
   }
 
+  Future<void> registerUser(
+      String fullName, String email, String password) async {
+    try {
+      // Create user in Firebase Authentication
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-  Future<void> registerUser(String fullName, String email, String password) async {
-  try {
-    // Create user in Firebase Authentication
-    UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+      // Save user data to Firestore
+      await FirebaseFirestore.instance
+          .collection('Adminuser')
+          .doc(userCredential.user!.uid)
+          .set({
+        'name': fullName,
+        'email': email,
+        'password': password,
 
-    // Save user data to Firestore
-    await FirebaseFirestore.instance.collection('Adminuser').doc(userCredential.user!.uid).set({
-      'name': fullName,
-      'email': email,
-      'password':password,
+        // Add other user-related data as needed
+      });
 
-      // Add other user-related data as needed
-    });
-
-    print('User registered successfully!');
-  } catch (e) {
-    print('Error registering user: $e');
+      print('User registered successfully!');
+    } catch (e) {
+      print('Error registering user: $e');
+    }
   }
-}
 }

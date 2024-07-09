@@ -1,13 +1,16 @@
-  import 'package:final_project/widgets/welcome_button.dart';
- import 'package:firebase_auth/firebase_auth.dart';
- import 'package:flutter/cupertino.dart';
- import 'package:flutter/material.dart';
- import 'package:final_project/screens/signup_screen.dart';
- import 'package:final_project/widgets/custom_scaffold.dart';
- import 'package:final_project/screens/category_screen.dart';
-import 'package:final_project/screens/second_screen.dart'; 
+// ignore_for_file: unused_import, file_names, prefer_const_constructors, use_build_context_synchronously, avoid_print
+
+import 'package:final_project/widgets/welcome_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:final_project/screens/signup_screen.dart';
+import 'package:final_project/widgets/custom_scaffold.dart';
+import 'package:final_project/screens/category_screen.dart';
+import 'package:final_project/screens/second_screen.dart';
 import 'package:final_project/screens/Admin_signup.dart';
 import 'package:final_project/screens/reportlist.dart';
+
 class BossSignIn extends StatefulWidget {
   const BossSignIn({Key? key}) : super(key: key);
 
@@ -47,7 +50,7 @@ class _SignInScreenState extends State<BossSignIn> {
                 child: Form(
                   key: _formSignInKey,
                   child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
                         'Welcome back Manager',
@@ -164,9 +167,9 @@ class _SignInScreenState extends State<BossSignIn> {
                         height: 25.0,
                       ),
                       SizedBox(
-                      width: double.infinity,
+                        width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () async { 
+                          onPressed: () async {
                             if (_formSignInKey.currentState!.validate() &&
                                 rememberPassword) {
                               try {
@@ -182,7 +185,7 @@ class _SignInScreenState extends State<BossSignIn> {
                                   MaterialPageRoute(
                                       builder: (context) => ReportListScreen()),
                                 );
-              
+
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text('Login Successful'),
@@ -212,32 +215,31 @@ class _SignInScreenState extends State<BossSignIn> {
                       ),
                       const SizedBox(height: 25.0),
                       Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Divider(
-                                thickness: 0.7,
-                                color: Colors.grey.withOpacity(0.5),
-                              ),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              thickness: 0.7,
+                              color: Colors.grey.withOpacity(0.5),
                             ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 0,
-                                horizontal: 0,
-                              ),
-                              
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 0,
+                              horizontal: 0,
                             ),
-                            Expanded(
-                              child: Divider(
-                                thickness: 0.7,
-                                color: Colors.grey.withOpacity(0.5),
-                              ),
+                          ),
+                          Expanded(
+                            child: Divider(
+                              thickness: 0.7,
+                              color: Colors.grey.withOpacity(0.5),
                             ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 25.0,
-                        ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

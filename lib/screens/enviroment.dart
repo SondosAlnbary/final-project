@@ -39,7 +39,8 @@ class _EnvironmentState extends State<environment> {
 
   Future<void> getUserName() async {
     try {
-      DocumentSnapshot userDoc = await _firestore.collection('user').doc(signedInUser.uid).get();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('user').doc(signedInUser.uid).get();
       if (userDoc.exists) {
         setState(() {
           userName = userDoc['name'];
@@ -260,6 +261,33 @@ class _EnvironmentState extends State<environment> {
                   ),
                 ),
               ),
+
+
+              TextButton(
+                onPressed: () {
+                  if (messageText1 != null && messageText != null) {
+                    _firestore.collection('environment').add({
+                      'sender': signedInUser.email,
+                      'name': userName,
+                      'address': messageText1,
+                      'Report': messageText,
+                      'situation':
+                          'Not treated yet', // Add default situation value
+                    });
+                    _showSnackbar(context, 'Report received');
+                  } else {
+                    _showSnackbar(context, 'Please fill in all fields');
+                  }
+                },
+                child: Text(
+                  'Send',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+
             ],
           ),
         ],
