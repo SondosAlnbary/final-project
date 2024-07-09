@@ -1,5 +1,3 @@
-// ignore_for_file: file_names, library_private_types_in_public_api, avoid_print, prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -76,8 +74,9 @@ class _SanitationState extends State<Sanitation> {
           },
         ),
       ),
-      body: Stack(children: [
-        Container(
+      body: Stack(
+        children: [
+          Container(
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage('assets/images/noeye.png'),
@@ -93,16 +92,7 @@ class _SanitationState extends State<Sanitation> {
                 height: 10,
               ),
             ),
-          ),
-          Column(
-            children: [
-              const Expanded(
-                flex: 1,
-                child: SizedBox(
-                  height: 10,
-                ),
-              ),
-              Expanded(
+            Expanded(
                 flex: 7,
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(25.0, 50.0, 25.0, 20.0),
@@ -124,7 +114,7 @@ class _SanitationState extends State<Sanitation> {
                             style: TextStyle(
                               fontSize: 30.0,
                               fontWeight: FontWeight.w900,
-                              color: Color.fromARGB(255, 45, 126, 219),
+                              color: Color.fromARGB(255, 0, 0, 0),
                             ),
                           ),
                           const SizedBox(
@@ -271,7 +261,6 @@ class _SanitationState extends State<Sanitation> {
                   ),
                 ),
               ),
-            ),
             TextButton(
               onPressed: () {
                 if (messageText1 != null && messageText != null) {
@@ -280,8 +269,7 @@ class _SanitationState extends State<Sanitation> {
                     'name': userName,
                     'address': messageText1,
                     'Report': messageText,
-                    'situation':
-                        'Not treated yet', // Add default situation value
+                    'situation': 'Not treated yet', // Add default situation value
                   });
                   _showSnackbar(context, 'Report received');
                 } else {
@@ -298,7 +286,8 @@ class _SanitationState extends State<Sanitation> {
             ),
           ],
         ),
-      ]),
+      ],
+      ),
     );
   }
 }

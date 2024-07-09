@@ -1,5 +1,3 @@
-// ignore_for_file: library_private_types_in_public_api, camel_case_types, avoid_print, prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -107,6 +105,7 @@ class _RoadState extends State<Road> {
                 ),
                 child: SingleChildScrollView(
                   child: Form(
+                    key: _formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -115,7 +114,7 @@ class _RoadState extends State<Road> {
                           style: TextStyle(
                             fontSize: 30.0,
                             fontWeight: FontWeight.w900,
-                            color: Color.fromARGB(255, 200, 32, 32),
+                            color: Color.fromARGB(255, 0, 0, 0),
                           ),
                         ),
                         const SizedBox(
@@ -233,6 +232,29 @@ class _RoadState extends State<Road> {
                         const SizedBox(
                           height: 20.0,
                         ),
+                        TextButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                _firestore.collection('road').add({
+                                  'sender': signedInUser.email,
+                                  'name': userName,
+                                  'address': messageText1,
+                                  'Report': messageText,
+                                  'situation': 'Not treated yet', // Add default situation value
+                                });
+                                _showSnackbar(context, 'Report received');
+                              } else {
+                                _showSnackbar(context, 'Please fill in all fields');
+                              }
+                            },
+                            child: Text(
+                              'Send',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),

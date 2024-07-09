@@ -261,8 +261,6 @@ class _EnvironmentState extends State<environment> {
                   ),
                 ),
               ),
-
-
               TextButton(
                 onPressed: () {
                   if (messageText1 != null && messageText != null) {
@@ -287,7 +285,6 @@ class _EnvironmentState extends State<environment> {
                   ),
                 ),
               ),
-
             ],
           ),
         ],

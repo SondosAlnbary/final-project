@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -106,6 +105,7 @@ class _transportationState extends State<transportation> {
                   ),
                   child: SingleChildScrollView(
                     child: Form(
+                      key: _formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -261,6 +261,29 @@ class _transportationState extends State<transportation> {
                   ),
                 ),
               ),
+              TextButton(
+              onPressed: () {
+                if (messageText1 != null && messageText != null) {
+                  _firestore.collection('transportation').add({
+                    'sender': signedInUser.email,
+                    'name': userName,
+                    'address': messageText1,
+                    'Report': messageText,
+                    'situation': 'Not treated yet', // Add default situation value
+                  });
+                  _showSnackbar(context, 'Report received');
+                } else {
+                  _showSnackbar(context, 'Please fill in all fields');
+                }
+              },
+              child: Text(
+                'Send',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
+              ),
+            ),
             ],
           ),
         ],
