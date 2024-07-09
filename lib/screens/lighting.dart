@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types, library_private_types_in_public_api, avoid_print, prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -36,9 +38,10 @@ class _lightingState extends State<lighting> {
     }
   }
 
-Future<void> getUserName() async {
+  Future<void> getUserName() async {
     try {
-      DocumentSnapshot userDoc = await _firestore.collection('user').doc(signedInUser.uid).get();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('user').doc(signedInUser.uid).get();
       if (userDoc.exists) {
         setState(() {
           userName = userDoc['name'];
@@ -49,7 +52,7 @@ Future<void> getUserName() async {
     }
   }
 
-void _showSnackbar(BuildContext context, String message) {
+  void _showSnackbar(BuildContext context, String message) {
     final snackBar = SnackBar(
       content: Text(message),
       duration: Duration(seconds: 3),
@@ -62,7 +65,7 @@ void _showSnackbar(BuildContext context, String message) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-         backgroundColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text('Lighting'),
         leading: IconButton(
@@ -72,17 +75,16 @@ void _showSnackbar(BuildContext context, String message) {
           },
         ),
       ),
-      body: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-               image: AssetImage('assets/images/noeye.png'),
-               fit: BoxFit.cover,
-              ),
-              ),
+      body: Stack(children: [
+        Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/noeye.png'),
+              fit: BoxFit.cover,
+            ),
           ),
-         Column(
+        ),
+        Column(
           children: [
             const Expanded(
               flex: 1,
@@ -243,7 +245,8 @@ void _showSnackbar(BuildContext context, String message) {
                     'name': userName,
                     'address': messageText1,
                     'Report': messageText,
-                    'situation': 'Not treated yet', // Add default situation value
+                    'situation':
+                        'Not treated yet', // Add default situation value
                   });
                   _showSnackbar(context, 'Report received');
                 } else {
@@ -260,8 +263,7 @@ void _showSnackbar(BuildContext context, String message) {
             ),
           ],
         ),
-        ]
-      ),
+      ]),
     );
   }
 }

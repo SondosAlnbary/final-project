@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, use_key_in_widget_constructors, library_private_types_in_public_api, avoid_print, prefer_const_constructors, prefer_const_constructors_in_immutables
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,7 +16,14 @@ class _AccountState extends State<AccountScreen> {
   String? email;
   String? username;
   List<String> collections = [
-    'Sanitation', 'environment', 'garden', 'road', 'lighting', 'safety', 'Utilities', 'transportation'
+    'Sanitation',
+    'environment',
+    'garden',
+    'road',
+    'lighting',
+    'safety',
+    'Utilities',
+    'transportation'
   ]; // Add your collection names here
 
   @override
@@ -37,7 +46,8 @@ class _AccountState extends State<AccountScreen> {
 
   Future<void> getUserDetails() async {
     try {
-      DocumentSnapshot userDoc = await _firestore.collection('user').doc(signedInUser!.uid).get();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('user').doc(signedInUser!.uid).get();
       if (userDoc.exists) {
         setState(() {
           email = userDoc['email'];
@@ -57,7 +67,10 @@ class _AccountState extends State<AccountScreen> {
     if (email != null) {
       for (String collection in collections) {
         try {
-          QuerySnapshot snapshot = await _firestore.collection(collection).where('sender', isEqualTo: email).get();
+          QuerySnapshot snapshot = await _firestore
+              .collection(collection)
+              .where('sender', isEqualTo: email)
+              .get();
           reports.addAll(snapshot.docs);
         } catch (e) {
           print(e);
@@ -106,7 +119,8 @@ class _AccountState extends State<AccountScreen> {
                       SizedBox(width: 10),
                       Text(
                         'Hello ${username ?? 'Loading...'}', // Greeting with the username
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -141,7 +155,8 @@ class _AccountState extends State<AccountScreen> {
                           var report = allReports[index];
                           return ReportItem(
                             report: report,
-                            selectedCollection: getCollectionName(report.reference.path),
+                            selectedCollection:
+                                getCollectionName(report.reference.path),
                           );
                         },
                       );
@@ -200,7 +215,8 @@ class ReportItem extends StatelessWidget {
                     ),
                     Text(
                       selectedCollection,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                     Text(
                       'Situation: $situation', // Display the "situation" field

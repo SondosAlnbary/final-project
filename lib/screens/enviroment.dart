@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types, library_private_types_in_public_api, avoid_print, prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -38,7 +40,8 @@ class _EnvironmentState extends State<environment> {
 
   Future<void> getUserName() async {
     try {
-      DocumentSnapshot userDoc = await _firestore.collection('user').doc(signedInUser.uid).get();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('user').doc(signedInUser.uid).get();
       if (userDoc.exists) {
         setState(() {
           userName = userDoc['name'];
@@ -243,7 +246,8 @@ class _EnvironmentState extends State<environment> {
                       'name': userName,
                       'address': messageText1,
                       'Report': messageText,
-                      'situation': 'Not treated yet', // Add default situation value
+                      'situation':
+                          'Not treated yet', // Add default situation value
                     });
                     _showSnackbar(context, 'Report received');
                   } else {

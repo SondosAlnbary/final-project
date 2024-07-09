@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, library_private_types_in_public_api, prefer_final_fields, avoid_print, use_build_context_synchronously, sized_box_for_whitespace
+
 import 'dart:io';
 
 import 'package:final_project/main.dart';

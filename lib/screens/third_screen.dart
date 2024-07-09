@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import, unnecessary_import, no_leading_underscores_for_local_identifiers, prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:final_project/screens/welcome_screen.dart';
@@ -16,7 +18,8 @@ class ThirdScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        automaticallyImplyLeading: false, // Set this property to false to remove the back arrow
+        automaticallyImplyLeading:
+            false, // Set this property to false to remove the back arrow
       ),
       extendBodyBehindAppBar: true,
       body: Stack(
@@ -66,11 +69,14 @@ class ThirdScreen extends StatelessWidget {
                               // Handle the first button press
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => SignUpScreen()), // Replace NextScreen with the actual screen you want to navigate to
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        SignUpScreen()), // Replace NextScreen with the actual screen you want to navigate to
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 50), // Set the minimum width
+                              minimumSize: Size(
+                                  double.infinity, 50), // Set the minimum width
                             ),
                             child: Text('Reporter'),
                           ),
@@ -114,11 +120,14 @@ class ThirdScreen extends StatelessWidget {
                               // Handle the second button press
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => AdminSignUp()), // Replace NextScreen with the actual screen you want to navigate to
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        AdminSignUp()), // Replace NextScreen with the actual screen you want to navigate to
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 50), // Set the minimum width
+                              minimumSize: Size(
+                                  double.infinity, 50), // Set the minimum width
                             ),
                             child: Text('Manager'),
                           ),

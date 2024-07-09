@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, library_private_types_in_public_api, avoid_print, prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -38,7 +40,8 @@ class _SanitationState extends State<Sanitation> {
 
   Future<void> getUserName() async {
     try {
-      DocumentSnapshot userDoc = await _firestore.collection('user').doc(signedInUser.uid).get();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('user').doc(signedInUser.uid).get();
       if (userDoc.exists) {
         setState(() {
           userName = userDoc['name'];
@@ -72,17 +75,16 @@ class _SanitationState extends State<Sanitation> {
           },
         ),
       ),
-      body: Stack(
-      children: [
-      Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/noeye.png'),
-            fit: BoxFit.cover,
+      body: Stack(children: [
+        Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/noeye.png'),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
-      ),
-         Column(
+        Column(
           children: [
             const Expanded(
               flex: 1,
@@ -243,7 +245,8 @@ class _SanitationState extends State<Sanitation> {
                     'name': userName,
                     'address': messageText1,
                     'Report': messageText,
-                    'situation': 'Not treated yet', // Add default situation value
+                    'situation':
+                        'Not treated yet', // Add default situation value
                   });
                   _showSnackbar(context, 'Report received');
                 } else {
@@ -260,9 +263,7 @@ class _SanitationState extends State<Sanitation> {
             ),
           ],
         ),
-      ]
-      ),
+      ]),
     );
   }
 }
-
