@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 // ignore: unused_import
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+String documents = '12';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

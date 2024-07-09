@@ -1,6 +1,11 @@
+import 'dart:io';
+
+import 'package:final_project/main.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class Utilities extends StatefulWidget {
   const Utilities({Key? key}) : super(key: key);
@@ -16,13 +21,53 @@ class _UtilitiesState extends State<Utilities> {
   String? userName;
   String? messageText;
   String? messageText1;
+  bool x = false;
+  List<String> downloadUrls = [];
+  List<File> _images = [];
+  int? selectedImage;
 
-  final _formKey = GlobalKey<FormState>();  // Added Global Key
+  final _formKey = GlobalKey<FormState>(); // Added Global Key
 
   @override
   void initState() {
     super.initState();
     getCurrentUser();
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final image = await ImagePicker().pickImage(source: source);
+    if (image != null) {
+      setState(() {
+        _images.add(File(image.path));
+      });
+    }
+  }
+
+  Future<void> _uploadImagesToFirebaseStorage() async {
+    print('This is my best rrrdocument $documents');
+    for (int i = 0; i < _images.length; i++) {
+      try {
+        File imageFile = _images[i];
+        String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+        // Create a reference to the location you want to upload to in Firebase Storage
+        Reference storageReference = FirebaseStorage.instance
+            .ref()
+            .child('images/$documents/$fileName.jpg');
+
+        // Upload the file to Firebase Storage
+        UploadTask uploadTask = storageReference.putFile(imageFile);
+
+        // Wait for the upload task to complete and fetch the download URL
+        TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
+        String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+
+        // Print the download URL for the uploaded image
+        // print('Download URL for Image $i: $k');
+      } catch (error) {
+        print('Error uploading image $i: $error');
+      }
+    }
   }
 
   void getCurrentUser() {
@@ -40,7 +85,8 @@ class _UtilitiesState extends State<Utilities> {
 
   Future<void> getUserName() async {
     try {
-      DocumentSnapshot userDoc = await _firestore.collection('user').doc(signedInUser.uid).get();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('user').doc(signedInUser.uid).get();
       if (userDoc.exists) {
         setState(() {
           userName = userDoc['name'];
@@ -54,7 +100,7 @@ class _UtilitiesState extends State<Utilities> {
   void _showSnackbar(BuildContext context, String message) {
     final snackBar = SnackBar(
       content: Text(message),
-      duration: Duration(seconds: 3),
+      duration: const Duration(seconds: 3),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
@@ -75,7 +121,17 @@ class _UtilitiesState extends State<Utilities> {
         'situation': 'Not treated yet',
         'Emergency': isEmergency ? 'yes' : 'no'
       });
+      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+          .instance
+          .collection('Utilities')
+          .where('sender', isEqualTo: signedInUser.email)
+          .where('name', isEqualTo: userName)
+          .where('address', isEqualTo: messageText1)
+          .where('Report', isEqualTo: messageText)
+          .get();
 
+      documents = snapshot.docs[0].id.toString();
+      _uploadImagesToFirebaseStorage();
       if (isEmergency) {
         // Update the Emergency field to "yes"
         await docRef.update({'Emergency': 'yes'});
@@ -95,9 +151,9 @@ class _UtilitiesState extends State<Utilities> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text('Utilities'),
+        title: const Text('Utilities'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -106,7 +162,7 @@ class _UtilitiesState extends State<Utilities> {
       body: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/noeye.png'),
                 fit: BoxFit.cover,
@@ -134,11 +190,11 @@ class _UtilitiesState extends State<Utilities> {
                   ),
                   child: SingleChildScrollView(
                     child: Form(
-                      key: _formKey,  // Added Global Key
+                      key: _formKey, // Added Global Key
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(
+                          const Text(
                             'Create a report',
                             style: TextStyle(
                               fontSize: 30.0,
@@ -265,7 +321,7 @@ class _UtilitiesState extends State<Utilities> {
                             onPressed: () {
                               _sendReport(isEmergency: false);
                             },
-                            child: Text(
+                            child: const Text(
                               'Send',
                               style: TextStyle(
                                 fontSize: 20,
@@ -276,6 +332,123 @@ class _UtilitiesState extends State<Utilities> {
                           const SizedBox(
                             height: 20.0,
                           ),
+                          //////////////////////////
+                          ElevatedButton(
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  x = true;
+
+                                  return Container(
+                                    padding: const EdgeInsets.all(16),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ListTile(
+                                          leading:
+                                              const Icon(Icons.photo_library),
+                                          title: const Text('Gallery'),
+                                          onTap: () {
+                                            _pickImage(ImageSource.gallery);
+
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(Icons.camera_alt),
+                                          title: const Text('Camera'),
+                                          onTap: () {
+                                            _pickImage(ImageSource.camera);
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              // primary: Colors.teal,
+                              side: const BorderSide(
+                                  color: Color.fromARGB(121, 0, 0, 0),
+                                  width: 2.0),
+                              minimumSize: const Size(40, 40),
+                            ),
+                            child: const Text(
+                              'Add photo',
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 0, 0, 0),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          // SizedBox(height: 20),
+                          Container(
+                            height: x ? 300 : 10,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: List.generate(
+                                _images.length,
+                                (index) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: Container(
+                                    //width: 150, // Set the desired width
+                                    height: 90, // Set the desired height
+                                    child: TextButton(
+                                      onPressed: () {},
+                                      onLongPress: () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                ListTile(
+                                                  leading:
+                                                      const Icon(Icons.delete),
+                                                  title: const Text(
+                                                      'delete photo'),
+                                                  onTap: () {
+                                                    setState(() {
+                                                      x = false;
+                                                      if (_images.isNotEmpty) {
+                                                        _images.removeAt(
+                                                            index); // Remove the image at the given
+                                                      }
+                                                    });
+                                                    Navigator.pop(
+                                                        context); // Close the bottom sheet
+                                                  },
+                                                ),
+                                                ListTile(
+                                                  leading:
+                                                      const Icon(Icons.cancel),
+                                                  title: const Text('Cancel'),
+                                                  onTap: () {
+                                                    Navigator.pop(
+                                                        context); // Close the bottom sheet
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: Image.file(
+                                        _images[index],
+                                        fit: BoxFit
+                                            .contain, // Adjust the fit as needed
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          //////////////////////////
                           TextButton(
                             onPressed: () {
                               _sendReport(isEmergency: true);
@@ -283,7 +456,7 @@ class _UtilitiesState extends State<Utilities> {
                             style: TextButton.styleFrom(
                               backgroundColor: Colors.red,
                             ),
-                            child: Text(
+                            child: const Text(
                               'Emergency',
                               style: TextStyle(
                                 fontSize: 20,
