@@ -16,6 +16,7 @@ class _safetyState extends State<safety> {
   String? userName;
   String? messageText;
   String? messageText1;
+final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -52,7 +53,7 @@ class _safetyState extends State<safety> {
 void _showSnackbar(BuildContext context, String message) {
     final snackBar = SnackBar(
       content: Text(message),
-      duration: Duration(seconds: 3),
+      duration: Duration(seconds: 2),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
@@ -103,6 +104,7 @@ void _showSnackbar(BuildContext context, String message) {
                 ),
                 child: SingleChildScrollView(
                   child: Form(
+                    key: _formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -235,29 +237,29 @@ void _showSnackbar(BuildContext context, String message) {
                 ),
               ),
             ),
-            TextButton(
-              onPressed: () {
-                if (messageText1 != null && messageText != null) {
-                  _firestore.collection('safety').add({
-                    'sender': signedInUser.email,
-                    'name': userName,
-                    'address': messageText1,
-                    'Report': messageText,
-                    'situation': 'Not treated yet', // Add default situation value
-                  });
-                  _showSnackbar(context, 'Report received');
-                } else {
-                  _showSnackbar(context, 'Please fill in all fields');
-                }
-              },
-              child: Text(
-                'Send',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+             TextButton(
+                onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                _firestore.collection('safety').add({
+                                  'sender': signedInUser.email,
+                                  'name': userName,
+                                  'address': messageText1,
+                                  'Report': messageText,
+                                  'situation': 'Not treated yet', // Add default situation value
+                                });
+                                _showSnackbar(context, 'Report received');
+                              } else {
+                                _showSnackbar(context, 'Please fill in all fields');
+                              }
+                            },
+                            child: Text(
+                              'Send',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
           ],
         ),
       ],

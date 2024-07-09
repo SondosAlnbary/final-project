@@ -16,6 +16,7 @@ class _EnvironmentState extends State<environment> {
   String? userName;
   String? messageText;
   String? messageText1;
+  final _formKey = GlobalKey<FormState>(); // Added Global Key
 
   @override
   void initState() {
@@ -103,6 +104,7 @@ class _EnvironmentState extends State<environment> {
                   ),
                   child: SingleChildScrollView(
                     child: Form(
+                      key: _formKey, // Added Global Key
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -123,12 +125,12 @@ class _EnvironmentState extends State<environment> {
                             },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Enter the address';
+                                return 'Please enter the address';
                               }
                               if (value.length < 2) {
-                                return "Username is too short.";
-                              } else if (value.length > 16) {
-                                return "Username is too long.";
+                                return "Address is too short.";
+                              } else if (value.length > 50) {
+                                return "Address is too long.";
                               } else {
                                 return null;
                               }
@@ -152,7 +154,7 @@ class _EnvironmentState extends State<environment> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            keyboardType: TextInputType.emailAddress,
+                            keyboardType: TextInputType.text,
                             autocorrect: false,
                             textCapitalization: TextCapitalization.none,
                           ),
@@ -229,32 +231,32 @@ class _EnvironmentState extends State<environment> {
                           const SizedBox(
                             height: 20.0,
                           ),
+                          TextButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                _firestore.collection('environment').add({
+                                  'sender': signedInUser.email,
+                                  'name': userName,
+                                  'address': messageText1,
+                                  'Report': messageText,
+                                  'situation': 'Not treated yet', // Add default situation value
+                                });
+                                _showSnackbar(context, 'Report received');
+                              } else {
+                                _showSnackbar(context, 'Please fill in all fields');
+                              }
+                            },
+                            child: Text(
+                              'Send',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  if (messageText1 != null && messageText != null) {
-                    _firestore.collection('environment').add({
-                      'sender': signedInUser.email,
-                      'name': userName,
-                      'address': messageText1,
-                      'Report': messageText,
-                      'situation': 'Not treated yet', // Add default situation value
-                    });
-                    _showSnackbar(context, 'Report received');
-                  } else {
-                    _showSnackbar(context, 'Please fill in all fields');
-                  }
-                },
-                child: Text(
-                  'Send',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
                   ),
                 ),
               ),

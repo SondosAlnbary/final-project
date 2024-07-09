@@ -16,6 +16,7 @@ class _GardenState extends State<Garden> {
   String? userName;
   String? messageText;
   String? messageText1;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -103,6 +104,7 @@ class _GardenState extends State<Garden> {
                   ),
                   child: SingleChildScrollView(
                     child: Form(
+                      key: _formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -123,11 +125,11 @@ class _GardenState extends State<Garden> {
                             },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Enter the address';
+                                return 'Please enter the address';
                               }
                               if (value.length < 2) {
                                 return "Address is too short.";
-                              } else if (value.length > 100) {
+                              } else if (value.length > 50) {
                                 return "Address is too long.";
                               } else {
                                 return null;
@@ -229,32 +231,32 @@ class _GardenState extends State<Garden> {
                           const SizedBox(
                             height: 20.0,
                           ),
+                          TextButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                _firestore.collection('garden').add({
+                                  'sender': signedInUser.email,
+                                  'name': userName,
+                                  'address': messageText1,
+                                  'Report': messageText,
+                                  'situation': 'Not treated yet', // Add default situation value
+                                });
+                                _showSnackbar(context, 'Report received');
+                              } else {
+                                _showSnackbar(context, 'Please fill in all fields');
+                              }
+                            },
+                            child: Text(
+                              'Send',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  if (messageText1 != null && messageText != null) {
-                    _firestore.collection('garden').add({
-                      'sender': signedInUser.email,
-                      'name': userName,
-                      'address': messageText1,
-                      'Report': messageText,
-                      'situation': 'Not treated yet', // Add default situation value
-                    });
-                    _showSnackbar(context, 'Report received');
-                  } else {
-                    _showSnackbar(context, 'Please fill in all fields');
-                  }
-                },
-                child: Text(
-                  'Send',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
                   ),
                 ),
               ),
