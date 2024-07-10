@@ -23,6 +23,7 @@ class _EnvironmentState extends State<Environment> {
   List<String> downloadUrls = [];
   bool showImages = false;
   int? selectedImage;
+  int? selectedImageIndex;
   String? documents;
 
   final _formKey = GlobalKey<FormState>();
@@ -37,6 +38,32 @@ class _EnvironmentState extends State<Environment> {
     final image = await ImagePicker().pickImage(source: source);
     if (image != null) {
       setState(() {
+        _images.add(File(image.path));
+        showImages = true;
+      });
+    }
+  }
+
+  Future<void> changeImage(ImageSource source) async {
+    final image = await ImagePicker().pickImage(source: source);
+    if (image != null) {
+      setState(() {
+        if (_images.isNotEmpty) {
+          _images.removeAt(0);
+        }
+        _images.add(File(image.path));
+        showImages = true;
+      });
+    }
+  }
+
+  Future<void> changeImageIndex(ImageSource source) async {
+    final image = await ImagePicker().pickImage(source: source);
+    if (image != null) {
+      setState(() {
+        if (selectedImageIndex != null) {
+          _images[selectedImageIndex!] = File(image.path);
+        }
         _images.add(File(image.path));
         showImages = true;
       });
@@ -322,40 +349,128 @@ class _EnvironmentState extends State<Environment> {
                                       return Padding(
                                         padding:
                                             const EdgeInsets.only(bottom: 10),
-                                        child: Container(
-                                          height: 90,
-                                          width: 90,
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 5),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                selectedImage = index;
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (_) => AlertDialog(
-                                                    contentPadding:
-                                                        EdgeInsets.zero,
-                                                    content: Image.file(
-                                                        _images[index]),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                        child: Text('Close'),
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              height: 90,
+                                              child: TextButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    selectedImage = index;
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (_) =>
+                                                          AlertDialog(
+                                                        contentPadding:
+                                                            EdgeInsets.zero,
+                                                        content: Image.file(
+                                                            _images[index]),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child:
+                                                                Text('Close'),
+                                                          ),
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              showModalBottomSheet(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  showImages =
+                                                                      true;
+
+                                                                  return Container(
+                                                                    padding:
+                                                                        EdgeInsets.all(
+                                                                            16),
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisSize:
+                                                                          MainAxisSize
+                                                                              .min,
+                                                                      children: [
+                                                                        ListTile(
+                                                                          leading:
+                                                                              Icon(Icons.photo_library),
+                                                                          title:
+                                                                              Text('Gallery'),
+                                                                          onTap:
+                                                                              () {
+                                                                            changeImage(ImageSource.gallery);
+
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                        ),
+                                                                        ListTile(
+                                                                          leading:
+                                                                              Icon(Icons.camera_alt),
+                                                                          title:
+                                                                              Text('camera'),
+                                                                          onTap:
+                                                                              () {
+                                                                            changeImage(ImageSource.camera);
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              ); // או _pickImage(ImageSource.camera);
+                                                            },
+                                                            child:
+                                                                Text('change'),
+                                                          ),
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                _images
+                                                                    .removeAt(
+                                                                        index);
+                                                                if (_images
+                                                                    .isEmpty) {
+                                                                  showImages =
+                                                                      false;
+                                                                }
+                                                              });
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child:
+                                                                Text('Delete'),
+                                                          ),
+                                                        ],
                                                       ),
-                                                    ],
-                                                  ),
-                                                );
-                                              });
-                                            },
-                                            child: Image.file(
-                                              _images[index],
-                                              fit: BoxFit.cover,
+                                                    );
+                                                  });
+                                                },
+                                                child: Image.file(
+                                                  _images[index],
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                            if (selectedImage == index)
+                                              Positioned(
+                                                top: 0,
+                                                right: 0,
+                                                child: CircleAvatar(
+                                                  backgroundColor: Colors.red,
+                                                  radius: 10,
+                                                  child: Icon(
+                                                    Icons.cancel,
+                                                    color: Colors.white,
+                                                    size: 15,
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
                                         ),
                                       );
                                     },

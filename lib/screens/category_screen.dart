@@ -178,7 +178,7 @@ class CategoryListScreen extends StatelessWidget {
           case 'Sanitation':
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => Sanitation()),
+              MaterialPageRoute(builder: (context) => SanitationState()),
             );
             break;
           case 'Garden Maintenance':
@@ -190,7 +190,7 @@ class CategoryListScreen extends StatelessWidget {
           case 'Lighting Maintenance':
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => lighting()),
+              MaterialPageRoute(builder: (context) => Lighting()),
             );
             break;
           case 'Road Maintenance':

@@ -1,27 +1,94 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
-class Sanitation extends StatefulWidget {
-  const Sanitation({Key? key}) : super(key: key);
+class SanitationState extends StatefulWidget {
+  const SanitationState({Key? key}) : super(key: key);
 
   @override
-  _SanitationState createState() => _SanitationState();
+  _SanitationStateState createState() => _SanitationStateState();
 }
 
-class _SanitationState extends State<Sanitation> {
+class _SanitationStateState extends State<SanitationState> {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
   late User signedInUser;
   String? userName;
   String? messageText;
   String? messageText1;
+  List<File> _images = [];
+  List<String> downloadUrls = [];
+  bool showImages = false;
+  int? selectedImage;
+  int? selectedImageIndex;
+  String? documentId;
+
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
     getCurrentUser();
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final image = await ImagePicker().pickImage(source: source);
+    if (image != null) {
+      setState(() {
+        _images.add(File(image.path));
+        showImages = true;
+      });
+    }
+  }
+
+  Future<void> changeImage(ImageSource source) async {
+    final image = await ImagePicker().pickImage(source: source);
+    if (image != null) {
+      setState(() {
+        if (_images.isNotEmpty) {
+          _images.removeAt(0);
+        }
+        _images.add(File(image.path));
+        showImages = true;
+      });
+    }
+  }
+
+  Future<void> changeImageIndex(ImageSource source) async {
+    final image = await ImagePicker().pickImage(source: source);
+    if (image != null) {
+      setState(() {
+        if (selectedImageIndex != null) {
+          _images[selectedImageIndex!] = File(image.path);
+        }
+        _images.add(File(image.path));
+        showImages = true;
+      });
+    }
+  }
+
+  Future<void> _uploadImagesToFirebaseStorage() async {
+    for (int i = 0; i < _images.length; i++) {
+      try {
+        File imageFile = _images[i];
+        String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+        Reference storageReference = FirebaseStorage.instance
+            .ref()
+            .child('images/$documentId/$fileName.jpg');
+
+        UploadTask uploadTask = storageReference.putFile(imageFile);
+
+        TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
+        String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+        downloadUrls.add(downloadUrl);
+      } catch (error) {
+        print('Error uploading image $i: $error');
+      }
+    }
   }
 
   void getCurrentUser() async {
@@ -59,6 +126,41 @@ class _SanitationState extends State<Sanitation> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
+  Future<void> _sendReport() async {
+    if (!_formKey.currentState!.validate()) {
+      _showSnackbar(context, 'Please fill out all fields.');
+      return;
+    }
+
+    try {
+      DocumentReference docRef = await _firestore.collection('lighting').add({
+        'sender': signedInUser.email,
+        'name': userName,
+        'address': messageText1,
+        'Report': messageText,
+        'situation': 'Not treated yet',
+        'Emergency': 'no',
+      });
+
+      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+          .instance
+          .collection('lighting')
+          .where('sender', isEqualTo: signedInUser.email)
+          .where('name', isEqualTo: userName)
+          .where('address', isEqualTo: messageText1)
+          .where('Report', isEqualTo: messageText)
+          .get();
+
+      documentId = snapshot.docs[0].id.toString();
+      await _uploadImagesToFirebaseStorage();
+
+      _showSnackbar(context, 'Report received');
+    } catch (e) {
+      _showSnackbar(context, 'Error sending report');
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,7 +168,7 @@ class _SanitationState extends State<Sanitation> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text('Sanitation'),
+        title: Text('Sanitation State'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -77,22 +179,22 @@ class _SanitationState extends State<Sanitation> {
       body: Stack(
         children: [
           Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/noeye.png'),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        Column(
-          children: [
-            const Expanded(
-              flex: 1,
-              child: SizedBox(
-                height: 10,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/noeye.png'),
+                fit: BoxFit.cover,
               ),
             ),
-            Expanded(
+          ),
+          Column(
+            children: [
+              const Expanded(
+                flex: 1,
+                child: SizedBox(
+                  height: 10,
+                ),
+              ),
+              Expanded(
                 flex: 7,
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(25.0, 50.0, 25.0, 20.0),
@@ -114,7 +216,7 @@ class _SanitationState extends State<Sanitation> {
                             style: TextStyle(
                               fontSize: 30.0,
                               fontWeight: FontWeight.w900,
-                              color: Color.fromARGB(255, 0, 0, 0),
+                              color: Color.fromARGB(255, 2, 77, 12),
                             ),
                           ),
                           const SizedBox(
@@ -130,7 +232,7 @@ class _SanitationState extends State<Sanitation> {
                               }
                               if (value.length < 2) {
                                 return "Address is too short.";
-                              } else if (value.length > 100) {
+                              } else if (value.length > 50) {
                                 return "Address is too long.";
                               } else {
                                 return null;
@@ -155,7 +257,7 @@ class _SanitationState extends State<Sanitation> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            keyboardType: TextInputType.streetAddress,
+                            keyboardType: TextInputType.text,
                             autocorrect: false,
                             textCapitalization: TextCapitalization.none,
                           ),
@@ -194,64 +296,198 @@ class _SanitationState extends State<Sanitation> {
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 8.0,
-                          ),
-                          const SizedBox(
-                            height: 5.0,
-                          ),
-                          const SizedBox(
-                            height: 25.0,
-                          ),
-                          const SizedBox(
-                            width: double.infinity,
-                          ),
-                          const SizedBox(
-                            height: 30.0,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Divider(
-                                  thickness: 0.7,
-                                  color: Colors.grey.withOpacity(0.5),
-                                ),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 0,
-                                  horizontal: 10,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 30.0,
-                          ),
-                          const SizedBox(
-                            height: 20.0,
-                          ),
-                          TextButton(
+                          const SizedBox(height: 25.0),
+                          ElevatedButton(
                             onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                _firestore.collection('Sanitation').add({
-                                  'sender': signedInUser.email,
-                                  'name': userName,
-                                  'address': messageText1,
-                                  'Report': messageText,
-                                  'situation': 'Not treated yet', // Add default situation value
-                                });
-                                _showSnackbar(context, 'Report received');
-                              } else {
-                                _showSnackbar(context, 'Please fill in all fields');
-                              }
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    padding: const EdgeInsets.all(16),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ListTile(
+                                          leading:
+                                              const Icon(Icons.photo_library),
+                                          title: const Text('Gallery'),
+                                          onTap: () {
+                                            _pickImage(ImageSource.gallery);
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(Icons.camera_alt),
+                                          title: const Text('Camera'),
+                                          onTap: () {
+                                            _pickImage(ImageSource.camera);
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
                             },
-                            child: Text(
+                            child: const Text(
+                              'Add photo',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          showImages
+                              ? Container(
+                                  height: 300,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: _images.length,
+                                    itemBuilder: (context, index) {
+                                      return Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 10),
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              height: 90,
+                                              child: TextButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    selectedImage = index;
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (_) =>
+                                                          AlertDialog(
+                                                        contentPadding:
+                                                            EdgeInsets.zero,
+                                                        content: Image.file(
+                                                            _images[index]),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child:
+                                                                Text('Close'),
+                                                          ),
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              showModalBottomSheet(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  showImages =
+                                                                      true;
+
+                                                                  return Container(
+                                                                    padding:
+                                                                        EdgeInsets.all(
+                                                                            16),
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisSize:
+                                                                          MainAxisSize
+                                                                              .min,
+                                                                      children: [
+                                                                        ListTile(
+                                                                          leading:
+                                                                              Icon(Icons.photo_library),
+                                                                          title:
+                                                                              Text('Gallery'),
+                                                                          onTap:
+                                                                              () {
+                                                                            changeImage(ImageSource.gallery);
+
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                        ),
+                                                                        ListTile(
+                                                                          leading:
+                                                                              Icon(Icons.camera_alt),
+                                                                          title:
+                                                                              Text('camera'),
+                                                                          onTap:
+                                                                              () {
+                                                                            changeImage(ImageSource.camera);
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              ); // או _pickImage(ImageSource.camera);
+                                                            },
+                                                            child:
+                                                                Text('change'),
+                                                          ),
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                _images
+                                                                    .removeAt(
+                                                                        index);
+                                                                if (_images
+                                                                    .isEmpty) {
+                                                                  showImages =
+                                                                      false;
+                                                                }
+                                                              });
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child:
+                                                                Text('Delete'),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  });
+                                                },
+                                                child: Image.file(
+                                                  _images[index],
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            if (selectedImage == index)
+                                              Positioned(
+                                                top: 0,
+                                                right: 0,
+                                                child: CircleAvatar(
+                                                  backgroundColor: Colors.red,
+                                                  radius: 10,
+                                                  child: Icon(
+                                                    Icons.cancel,
+                                                    color: Colors.white,
+                                                    size: 15,
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : Container(),
+                          const SizedBox(height: 15),
+                          ElevatedButton(
+                            onPressed: () async {
+                              await _sendReport();
+                            },
+                            child: const Text(
                               'Send',
                               style: TextStyle(
+                                color: Color.fromARGB(255, 20, 2, 2),
                                 fontSize: 20,
-                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
@@ -261,32 +497,9 @@ class _SanitationState extends State<Sanitation> {
                   ),
                 ),
               ),
-            TextButton(
-              onPressed: () {
-                if (messageText1 != null && messageText != null) {
-                  _firestore.collection('Sanitation').add({
-                    'sender': signedInUser.email,
-                    'name': userName,
-                    'address': messageText1,
-                    'Report': messageText,
-                    'situation': 'Not treated yet', // Add default situation value
-                  });
-                  _showSnackbar(context, 'Report received');
-                } else {
-                  _showSnackbar(context, 'Please fill in all fields');
-                }
-              },
-              child: Text(
-                'Send',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
       ),
     );
   }
