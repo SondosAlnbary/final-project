@@ -10,7 +10,7 @@ import 'garden.dart';
 import 'lighting.dart';
 import 'road.dart';
 import 'safety.dart';
-import 'transportation.dart';
+import 'Transportation.dart';
 import 'utilities.dart';
 
 class CategoryScreen extends StatefulWidget {
@@ -202,13 +202,13 @@ class CategoryListScreen extends StatelessWidget {
           case 'Environment':
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => environment()),
+              MaterialPageRoute(builder: (context) => Environment()),
             );
             break;
           case 'Safety':
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => safety()),
+              MaterialPageRoute(builder: (context) => Safety()),
             );
             break;
           case 'Utilities':
@@ -220,7 +220,7 @@ class CategoryListScreen extends StatelessWidget {
           case 'Transportation':
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => transportation()),
+              MaterialPageRoute(builder: (context) => Transportation()),
             );
             break;
           default:
@@ -240,8 +240,8 @@ class CategoryListScreen extends StatelessWidget {
               if (category.imagePath != null)
                 Image.asset(
                   category.imagePath!,
-                  width: 150.0,
-                  height: 150.0,
+                  width: 100.0,
+                  height: 100.0,
                 )
               else
                 Icon(
@@ -252,6 +252,7 @@ class CategoryListScreen extends StatelessWidget {
               const SizedBox(height: 8.0),
               Text(
                 category.name,
+                textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 18.0),
               ),
             ],

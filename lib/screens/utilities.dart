@@ -1,7 +1,4 @@
-// ignore_for_file: unused_local_variable, library_private_types_in_public_api, prefer_final_fields, avoid_print, use_build_context_synchronously, sized_box_for_whitespace
-
 import 'dart:io';
-import 'package:final_project/main.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,12 +19,13 @@ class _UtilitiesState extends State<Utilities> {
   String? userName;
   String? messageText;
   String? messageText1;
-  bool x = false;
+  bool showImages = false;
   List<String> downloadUrls = [];
   List<File> _images = [];
   int? selectedImage;
+  String? documents;
 
-  final _formKey = GlobalKey<FormState>(); // Added Global Key
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -40,31 +38,26 @@ class _UtilitiesState extends State<Utilities> {
     if (image != null) {
       setState(() {
         _images.add(File(image.path));
+        showImages = true;
       });
     }
   }
 
   Future<void> _uploadImagesToFirebaseStorage() async {
-    print('This is my best rrrdocument $documents');
     for (int i = 0; i < _images.length; i++) {
       try {
         File imageFile = _images[i];
         String fileName = DateTime.now().millisecondsSinceEpoch.toString();
 
-        // Create a reference to the location you want to upload to in Firebase Storage
         Reference storageReference = FirebaseStorage.instance
             .ref()
             .child('images/$documents/$fileName.jpg');
 
-        // Upload the file to Firebase Storage
         UploadTask uploadTask = storageReference.putFile(imageFile);
 
-        // Wait for the upload task to complete and fetch the download URL
         TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
         String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-
-        // Print the download URL for the uploaded image
-        // print('Download URL for Image $i: $k');
+        downloadUrls.add(downloadUrl);
       } catch (error) {
         print('Error uploading image $i: $error');
       }
@@ -108,7 +101,6 @@ class _UtilitiesState extends State<Utilities> {
 
   Future<void> _sendReport({required bool isEmergency}) async {
     if (!_formKey.currentState!.validate()) {
-      // If the form is not valid, display a message and return.
       _showSnackbar(context, 'Please fill out all fields.');
       return;
     }
@@ -122,6 +114,7 @@ class _UtilitiesState extends State<Utilities> {
         'situation': 'Not treated yet',
         'Emergency': isEmergency ? 'yes' : 'no'
       });
+
       QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
           .instance
           .collection('Utilities')
@@ -132,9 +125,8 @@ class _UtilitiesState extends State<Utilities> {
           .get();
 
       documents = snapshot.docs[0].id.toString();
-      _uploadImagesToFirebaseStorage();
+      await _uploadImagesToFirebaseStorage();
       if (isEmergency) {
-        // Update the Emergency field to "yes"
         await docRef.update({'Emergency': 'yes'});
       }
 
@@ -191,7 +183,7 @@ class _UtilitiesState extends State<Utilities> {
                   ),
                   child: SingleChildScrollView(
                     child: Form(
-                      key: _formKey, // Added Global Key
+                      key: _formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -281,66 +273,13 @@ class _UtilitiesState extends State<Utilities> {
                             ),
                           ),
                           const SizedBox(
-                            height: 8.0,
-                          ),
-                          const SizedBox(
-                            height: 5.0,
-                          ),
-                          const SizedBox(
                             height: 25.0,
                           ),
-                          const SizedBox(
-                            width: double.infinity,
-                          ),
-                          const SizedBox(
-                            height: 30.0,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Divider(
-                                  thickness: 0.7,
-                                  color: Colors.grey.withOpacity(0.5),
-                                ),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 0,
-                                  horizontal: 10,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 30.0,
-                          ),
-                          const SizedBox(
-                            height: 20.0,
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              _sendReport(isEmergency: false);
-                            },
-                            child: const Text(
-                              'Send',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20.0,
-                          ),
-                          //////////////////////////
                           ElevatedButton(
                             onPressed: () {
                               showModalBottomSheet(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  x = true;
-
                                   return Container(
                                     padding: const EdgeInsets.all(16),
                                     child: Column(
@@ -352,7 +291,6 @@ class _UtilitiesState extends State<Utilities> {
                                           title: const Text('Gallery'),
                                           onTap: () {
                                             _pickImage(ImageSource.gallery);
-
                                             Navigator.pop(context);
                                           },
                                         ),
@@ -370,91 +308,68 @@ class _UtilitiesState extends State<Utilities> {
                                 },
                               );
                             },
-                            style: ElevatedButton.styleFrom(
-                              // primary: Colors.teal,
-                              side: const BorderSide(
-                                  color: Color.fromARGB(121, 0, 0, 0),
-                                  width: 2.0),
-                              minimumSize: const Size(40, 40),
-                            ),
                             child: const Text(
                               'Add photo',
                               style: TextStyle(
-                                  color: Color.fromARGB(255, 0, 0, 0),
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          // SizedBox(height: 20),
-                          Container(
-                            height: x ? 300 : 10,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: List.generate(
-                                _images.length,
-                                (index) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
-                                  child: Container(
-                                    //width: 150, // Set the desired width
-                                    height: 90, // Set the desired height
-                                    child: TextButton(
-                                      onPressed: () {},
-                                      onLongPress: () {
-                                        showModalBottomSheet(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                ListTile(
-                                                  leading:
-                                                      const Icon(Icons.delete),
-                                                  title: const Text(
-                                                      'delete photo'),
-                                                  onTap: () {
-                                                    setState(() {
-                                                      x = false;
-                                                      if (_images.isNotEmpty) {
-                                                        _images.removeAt(
-                                                            index); // Remove the image at the given
-                                                      }
-                                                    });
-                                                    Navigator.pop(
-                                                        context); // Close the bottom sheet
-                                                  },
-                                                ),
-                                                ListTile(
-                                                  leading:
-                                                      const Icon(Icons.cancel),
-                                                  title: const Text('Cancel'),
-                                                  onTap: () {
-                                                    Navigator.pop(
-                                                        context); // Close the bottom sheet
-                                                  },
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      },
-                                      child: Image.file(
-                                        _images[index],
-                                        fit: BoxFit
-                                            .contain, // Adjust the fit as needed
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-
-                          //////////////////////////
-                          TextButton(
-                            onPressed: () {
-                              _sendReport(isEmergency: true);
+                          showImages
+                              ? Container(
+                                  height: 300,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: _images.length,
+                                    itemBuilder: (context, index) {
+                                      return Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 10),
+                                        child: Container(
+                                          height: 90,
+                                          child: TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                selectedImage = index;
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (_) => AlertDialog(
+                                                    contentPadding:
+                                                        EdgeInsets.zero,
+                                                    content: Image.file(
+                                                        _images[index]),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Text('Close'),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              });
+                                            },
+                                            child: Image.file(
+                                              _images[index],
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : Container(),
+                          const SizedBox(height: 15),
+                          ElevatedButton(
+                            onPressed: () async {
+                              await _sendReport(isEmergency: true);
                             },
-                            style: TextButton.styleFrom(
+                            style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red,
                             ),
                             child: const Text(
@@ -462,6 +377,21 @@ class _UtilitiesState extends State<Utilities> {
                               style: TextStyle(
                                 fontSize: 20,
                                 color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          ElevatedButton(
+                            onPressed: () async {
+                              await _sendReport(isEmergency: false);
+                            },
+                            child: const Text(
+                              'Send',
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 22, 2, 2),
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),

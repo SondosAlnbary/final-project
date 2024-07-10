@@ -1,22 +1,31 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
-class environment extends StatefulWidget {
-  const environment({Key? key}) : super(key: key);
+class Environment extends StatefulWidget {
+  const Environment({Key? key}) : super(key: key);
 
   @override
   _EnvironmentState createState() => _EnvironmentState();
 }
 
-class _EnvironmentState extends State<environment> {
+class _EnvironmentState extends State<Environment> {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
   late User signedInUser;
   String? userName;
   String? messageText;
   String? messageText1;
-  final _formKey = GlobalKey<FormState>(); // Added Global Key
+  List<File> _images = [];
+  List<String> downloadUrls = [];
+  bool showImages = false;
+  int? selectedImage;
+  String? documents;
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -24,13 +33,44 @@ class _EnvironmentState extends State<environment> {
     getCurrentUser();
   }
 
-  void getCurrentUser() {
+  Future<void> _pickImage(ImageSource source) async {
+    final image = await ImagePicker().pickImage(source: source);
+    if (image != null) {
+      setState(() {
+        _images.add(File(image.path));
+        showImages = true;
+      });
+    }
+  }
+
+  Future<void> _uploadImagesToFirebaseStorage() async {
+    for (int i = 0; i < _images.length; i++) {
+      try {
+        File imageFile = _images[i];
+        String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+        Reference storageReference = FirebaseStorage.instance
+            .ref()
+            .child('images/$documents/$fileName.jpg');
+
+        UploadTask uploadTask = storageReference.putFile(imageFile);
+
+        TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
+        String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+        downloadUrls.add(downloadUrl);
+      } catch (error) {
+        print('Error uploading image $i: $error');
+      }
+    }
+  }
+
+  void getCurrentUser() async {
     try {
       final user = _auth.currentUser;
       if (user != null) {
         signedInUser = user;
         print(signedInUser.email);
-        getUserName();
+        await getUserName();
       }
     } catch (e) {
       print(e);
@@ -54,9 +94,44 @@ class _EnvironmentState extends State<environment> {
   void _showSnackbar(BuildContext context, String message) {
     final snackBar = SnackBar(
       content: Text(message),
-      duration: Duration(seconds: 2),
+      duration: Duration(seconds: 3),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  Future<void> _sendReport() async {
+    if (!_formKey.currentState!.validate()) {
+      _showSnackbar(context, 'Please fill out all fields.');
+      return;
+    }
+
+    try {
+      DocumentReference docRef =
+          await _firestore.collection('environment').add({
+        'sender': signedInUser.email,
+        'name': userName,
+        'address': messageText1,
+        'Report': messageText,
+        'situation': 'Not treated yet',
+      });
+
+      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+          .instance
+          .collection('environment')
+          .where('sender', isEqualTo: signedInUser.email)
+          .where('name', isEqualTo: userName)
+          .where('address', isEqualTo: messageText1)
+          .where('Report', isEqualTo: messageText)
+          .get();
+
+      documents = snapshot.docs[0].id.toString();
+      await _uploadImagesToFirebaseStorage();
+
+      _showSnackbar(context, 'Report received');
+    } catch (e) {
+      _showSnackbar(context, 'Error sending report');
+      print(e);
+    }
   }
 
   @override
@@ -105,7 +180,7 @@ class _EnvironmentState extends State<environment> {
                   ),
                   child: SingleChildScrollView(
                     child: Form(
-                      key: _formKey, // Added Global Key
+                      key: _formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -194,94 +269,116 @@ class _EnvironmentState extends State<environment> {
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 8.0,
-                          ),
-                          const SizedBox(
-                            height: 5.0,
-                          ),
-                          const SizedBox(
-                            height: 25.0,
-                          ),
-                          const SizedBox(
-                            width: double.infinity,
-                          ),
-                          const SizedBox(
-                            height: 30.0,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Divider(
-                                  thickness: 0.7,
-                                  color: Colors.grey.withOpacity(0.5),
-                                ),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 0,
-                                  horizontal: 10,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 30.0,
-                          ),
-                          const SizedBox(
-                            height: 20.0,
-                          ),
-                          TextButton(
+                          const SizedBox(height: 25.0),
+                          ElevatedButton(
                             onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                _firestore.collection('environment').add({
-                                  'sender': signedInUser.email,
-                                  'name': userName,
-                                  'address': messageText1,
-                                  'Report': messageText,
-                                  'situation': 'Not treated yet', // Add default situation value
-                                });
-                                _showSnackbar(context, 'Report received');
-                              } else {
-                                _showSnackbar(context, 'Please fill in all fields');
-                              }
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    padding: const EdgeInsets.all(16),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ListTile(
+                                          leading:
+                                              const Icon(Icons.photo_library),
+                                          title: const Text('Gallery'),
+                                          onTap: () {
+                                            _pickImage(ImageSource.gallery);
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(Icons.camera_alt),
+                                          title: const Text('Camera'),
+                                          onTap: () {
+                                            _pickImage(ImageSource.camera);
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
                             },
-                            child: Text(
+                            child: const Text(
+                              'Add photo',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          showImages
+                              ? Container(
+                                  height: 300,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: _images.length,
+                                    itemBuilder: (context, index) {
+                                      return Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 10),
+                                        child: Container(
+                                          height: 90,
+                                          width: 90,
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 5),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                selectedImage = index;
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (_) => AlertDialog(
+                                                    contentPadding:
+                                                        EdgeInsets.zero,
+                                                    content: Image.file(
+                                                        _images[index]),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Text('Close'),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              });
+                                            },
+                                            child: Image.file(
+                                              _images[index],
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : Container(),
+                          const SizedBox(height: 15),
+                          ElevatedButton(
+                            onPressed: () async {
+                              await _sendReport();
+                            },
+                            child: const Text(
                               'Send',
                               style: TextStyle(
+                                color: Color.fromARGB(255, 14, 1, 1),
                                 fontSize: 20,
-                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  if (messageText1 != null && messageText != null) {
-                    _firestore.collection('environment').add({
-                      'sender': signedInUser.email,
-                      'name': userName,
-                      'address': messageText1,
-                      'Report': messageText,
-                      'situation':
-                          'Not treated yet', // Add default situation value
-                    });
-                    _showSnackbar(context, 'Report received');
-                  } else {
-                    _showSnackbar(context, 'Please fill in all fields');
-                  }
-                },
-                child: Text(
-                  'Send',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
                   ),
                 ),
               ),
