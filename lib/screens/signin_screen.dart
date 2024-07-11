@@ -22,6 +22,7 @@ class _SignInScreenState extends State<SingnInScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool rememberPassword = true;
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +107,7 @@ class _SignInScreenState extends State<SingnInScreen> {
                       ),
                       TextFormField(
                         controller: passwordController,
-                        obscureText: true,
+                        obscureText: _obscureText,
                         obscuringCharacter: '*',
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -115,6 +116,16 @@ class _SignInScreenState extends State<SingnInScreen> {
                           return null;
                         },
                         decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                            icon: Icon(_obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                          ),
                           label: const Text('Password'),
                           hintText: 'Enter Password',
                           hintStyle: const TextStyle(
