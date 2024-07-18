@@ -4,6 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:final_project/screens/map_page.dart';
+import 'package:location/location.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Utilities extends StatefulWidget {
   const Utilities({Key? key}) : super(key: key);
@@ -25,6 +28,7 @@ class _UtilitiesState extends State<Utilities> {
   int? selectedImage;
   int? selectedImageIndex;
   String? documents;
+  LatLng? currentLocation;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -32,6 +36,16 @@ class _UtilitiesState extends State<Utilities> {
   void initState() {
     super.initState();
     getCurrentUser();
+    getLocation();
+  }
+
+  Future<void> getLocation() async {
+    Location location = Location();
+    LocationData _locationData = await location.getLocation();
+    setState(() {
+      currentLocation =
+          LatLng(_locationData.latitude!, _locationData.longitude!);
+    });
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -132,6 +146,11 @@ class _UtilitiesState extends State<Utilities> {
       return;
     }
 
+    if (currentLocation == null) {
+      _showSnackbar(context, 'Could not get current location.');
+      return;
+    }
+
     try {
       DocumentReference docRef = await _firestore.collection('Utilities').add({
         'sender': signedInUser.email,
@@ -139,7 +158,9 @@ class _UtilitiesState extends State<Utilities> {
         'address': messageText1,
         'Report': messageText,
         'situation': 'Not treated yet',
-        'Emergency': isEmergency ? 'yes' : 'no'
+        'Emergency': isEmergency ? 'yes' : 'no',
+        'currentLocation':
+            GeoPoint(currentLocation!.latitude, currentLocation!.longitude),
       });
 
       QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
@@ -513,6 +534,15 @@ class _UtilitiesState extends State<Utilities> {
                               ),
                             ),
                           ),
+                          // TextButton(
+                          //     onPressed: () {
+                          //      Navigator.pushReplacement(
+                          //         context,
+                          //         MaterialPageRoute(
+                          //             builder: (context) => MapPage()),
+                          //       );
+                          //     },
+                          //     child: Text('map'))
                         ],
                       ),
                     ),

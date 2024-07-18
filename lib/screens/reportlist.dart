@@ -1,11 +1,14 @@
 // ignore_for_file: unused_import, use_key_in_widget_constructors, library_private_types_in_public_api, prefer_const_constructors, prefer_const_constructors_in_immutables
 
 import 'package:final_project/screens/emergencyreports.dart';
+import 'package:final_project/screens/map_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'welcome_screen.dart';
+
+String name = '12';
 
 class ReportListScreen extends StatefulWidget {
   @override
@@ -157,6 +160,7 @@ class _ReportListScreenState extends State<ReportListScreen> {
   Future<bool> doesCollectionExist(String collectionName) async {
     var collectionRef = FirebaseFirestore.instance.collection(collectionName);
     var docSnapshot = await collectionRef.limit(1).get();
+    name = collectionName;
     return docSnapshot.docs.isNotEmpty;
   }
 }
@@ -239,6 +243,18 @@ class _ReportItemState extends State<ReportItem> {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                     ),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MapPage(
+                                      documentId: widget.report.id,
+                                      assusise: widget.selectedCollection,
+                                    )),
+                          );
+                        },
+                        child: Text('targetlocation'))
                   ],
                 ),
                 trailing: Row(
