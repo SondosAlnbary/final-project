@@ -2,8 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:location/location.dart';
 
 class Road extends StatefulWidget {
   const Road({Key? key}) : super(key: key);
@@ -24,7 +26,8 @@ class _RoadState extends State<Road> {
   bool showImages = false;
   int? selectedImage;
   int? selectedImageIndex;
-  String? documentId;
+  String? documents;
+  LatLng? currentLocation;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -32,6 +35,16 @@ class _RoadState extends State<Road> {
   void initState() {
     super.initState();
     getCurrentUser();
+    getLocation();
+  }
+
+  Future<void> getLocation() async {
+    Location location = Location();
+    LocationData _locationData = await location.getLocation();
+    setState(() {
+      currentLocation =
+          LatLng(_locationData.latitude!, _locationData.longitude!);
+    });
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -78,7 +91,7 @@ class _RoadState extends State<Road> {
 
         Reference storageReference = FirebaseStorage.instance
             .ref()
-            .child('road_images/$documentId/$fileName.jpg');
+            .child('road_images/$documents/$fileName.jpg');
 
         UploadTask uploadTask = storageReference.putFile(imageFile);
 
@@ -132,6 +145,11 @@ class _RoadState extends State<Road> {
       return;
     }
 
+    if (currentLocation == null) {
+      _showSnackbar(context, 'Could not get current location.');
+      return;
+    }
+
     try {
       DocumentReference docRef = await _firestore.collection('road').add({
         'sender': signedInUser.email,
@@ -140,6 +158,8 @@ class _RoadState extends State<Road> {
         'Report': messageText,
         'situation': 'Not treated yet',
         'Emergency': 'no',
+        'currentLocation':
+            GeoPoint(currentLocation!.latitude, currentLocation!.longitude),
       });
 
       QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
@@ -151,7 +171,7 @@ class _RoadState extends State<Road> {
           .where('Report', isEqualTo: messageText)
           .get();
 
-      documentId = snapshot.docs[0].id.toString();
+      documents = snapshot.docs[0].id.toString();
       await _uploadImagesToFirebaseStorage();
 
       _showSnackbar(context, 'Report received');

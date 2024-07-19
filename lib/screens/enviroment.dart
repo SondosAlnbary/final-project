@@ -2,8 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:location/location.dart';
 
 class Environment extends StatefulWidget {
   const Environment({Key? key}) : super(key: key);
@@ -25,6 +27,7 @@ class _EnvironmentState extends State<Environment> {
   int? selectedImage;
   int? selectedImageIndex;
   String? documents;
+  LatLng? currentLocation;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -32,6 +35,16 @@ class _EnvironmentState extends State<Environment> {
   void initState() {
     super.initState();
     getCurrentUser();
+    getLocation();
+  }
+
+  Future<void> getLocation() async {
+    Location location = Location();
+    LocationData _locationData = await location.getLocation();
+    setState(() {
+      currentLocation =
+          LatLng(_locationData.latitude!, _locationData.longitude!);
+    });
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -131,6 +144,10 @@ class _EnvironmentState extends State<Environment> {
       _showSnackbar(context, 'Please fill out all fields.');
       return;
     }
+    if (currentLocation == null) {
+      _showSnackbar(context, 'Could not get current location.');
+      return;
+    }
 
     try {
       DocumentReference docRef =
@@ -140,6 +157,8 @@ class _EnvironmentState extends State<Environment> {
         'address': messageText1,
         'Report': messageText,
         'situation': 'Not treated yet',
+        'currentLocation':
+            GeoPoint(currentLocation!.latitude, currentLocation!.longitude),
       });
 
       QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore

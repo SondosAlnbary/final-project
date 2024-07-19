@@ -1,5 +1,3 @@
-// ignore_for_file: unused_import, use_key_in_widget_constructors, library_private_types_in_public_api, prefer_const_constructors, prefer_const_constructors_in_immutables
-
 import 'package:final_project/screens/emergencyreports.dart';
 import 'package:final_project/screens/map_page.dart';
 import 'package:flutter/material.dart';
@@ -245,6 +243,7 @@ class _ReportItemState extends State<ReportItem> {
                     ),
                     TextButton(
                         onPressed: () {
+                          print("lllllllllllll ${widget.report.id}");
                           Navigator.push(
                             context,
                             MaterialPageRoute(

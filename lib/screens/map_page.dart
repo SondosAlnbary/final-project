@@ -195,20 +195,6 @@ class _MapPageState extends State<MapPage> {
 
   Set<Marker> _createMarkers() {
     Set<Marker> markers = {};
-
-    // Marker for Be'er Sheva
-    markers.add(
-      Marker(
-        markerId: MarkerId("beerSheva"),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-        position: LatLng(31.25181, 34.7913),
-        infoWindow: InfoWindow(
-          title: "Be'er Sheva",
-          snippet: "City in Israel",
-        ),
-      ),
-    );
-
     // Current location marker
     markers.add(
       Marker(
